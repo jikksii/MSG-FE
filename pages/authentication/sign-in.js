@@ -26,13 +26,13 @@ const SignIn = () => {
 
   const handleError = (error) => {
     console.log(error);
-    if (error.response.status === 404) {
+    if (error.response?.status === 404) {
       console.log(error.response.data.message);
       setErrorMessage(error.response.data.message);
       return;
     }
 
-    if (error.response.status === 422) {
+    if (error.response?.status === 422) {
       console.log(error.response.data.errors);
       setErrors(error.response.data.errors)
       return;

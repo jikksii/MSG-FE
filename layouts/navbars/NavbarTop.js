@@ -9,8 +9,37 @@ import {
 
 // import sub components
 import QuickMenu from 'layouts/QuickMenu';
+import useHttp from 'hooks/useHttp';
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
+import { deleteCookie } from 'cookies-next';
+
 
 const NavbarTop = (props) => {
+
+	const router = useRouter()
+	const handleSuccessAuth = useCallback(data => {
+		deleteCookie('token');
+		router.push('/authentication/sign-in');
+	}, []);
+
+	const handleError = (error) => {
+		console.log(error);
+		if (error.response?.status === 401) {
+			deleteCookie('token');
+			router.push('/authentication/sign-in');
+		}
+	}
+
+
+	const { sendRequest: logout } = useHttp(handleSuccessAuth, handleError)
+
+	const signOutHandler = () => {
+		logout({
+			method: 'PATCH',
+			url: "/logout",
+		});
+	}
 	return (
 		<Navbar expanded="lg" className="navbar-classic navbar navbar-expand-lg">
 			<div className='d-flex justify-content-between w-100'>
@@ -31,7 +60,7 @@ const NavbarTop = (props) => {
 				</div>
 				{/* Quick Menu */}
 				<Nav className="navbar-right-wrap ms-2 d-flex nav-top-wrap">
-					<QuickMenu />
+					<QuickMenu handleSignOut={signOutHandler} />
 				</Nav>
 			</div>
 		</Navbar>

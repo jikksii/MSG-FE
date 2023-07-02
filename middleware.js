@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 export function middleware(request) {
-  const userToken = request.cookies.get('your-key')?.value;
+  const userToken = request.cookies.get('token')?.value;
 
 
   if (!userToken && request.nextUrl.pathname !== '/authentication/sign-in') {

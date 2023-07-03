@@ -22,7 +22,7 @@ import BillingAddress from 'sub-components/billing/BillingAddress';
 
 // sub components for /pages/settings
 import DeleteAccount from 'sub-components/settings/DeleteAccount';
-import EmailSetting from 'sub-components/settings/EmailSetting';
+import PasswordSetting from 'sub-components/settings/PasswordSetting';
 import GeneralSetting from 'sub-components/settings/GeneralSetting';
 import Notifications from 'sub-components/settings/Notifications';
 import Preferences from 'sub-components/settings/Preferences';
@@ -44,7 +44,7 @@ export {
    BillingAddress,
 
    DeleteAccount, 
-   EmailSetting,  
+   PasswordSetting,  
    GeneralSetting, 
    Notifications, 
    Preferences

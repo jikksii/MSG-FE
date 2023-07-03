@@ -5,7 +5,7 @@ import { Container } from 'react-bootstrap';
 import { PageHeading } from 'widgets'
 
 // import sub components
-import { Notifications, DeleteAccount, GeneralSetting, EmailSetting, Preferences } from 'sub-components'
+import { Notifications, DeleteAccount, GeneralSetting, PasswordSetting, Preferences } from 'sub-components'
 
 const Settings = () => {
   return (
@@ -18,16 +18,8 @@ const Settings = () => {
       <GeneralSetting />
 
       {/* Email Settings */}
-      <EmailSetting />
+      <PasswordSetting />
 
-      {/* Settings for Preferences */}
-      <Preferences />
-
-      {/* Settings for Notifications */}
-      <Notifications />
-
-      {/* Delete Your Account */}
-      <DeleteAccount />
 
     </Container>
   )

@@ -40,20 +40,21 @@ export const DashboardMenu = [
 		title: 'SMS',
 		icon: 'message-square',
 		children: [
-			{ id: uuid(), link: '/pages/profile', name: 'Messages' },
+			{ id: uuid(), link: '/pages/profile', name: 'Create New Messages' },
+			{ id: uuid(), link: '/sms/queue', name: 'Queue' },
 			{ id: uuid(), link: '/pages/settings', name: 'Messages Archive'},
-			{ id: uuid(), link: '/pages/billing', name: 'Queue' },
-			{ id: uuid(), link: '/pages/pricing', name: 'Inbox'},
-			{ id: uuid(), link: '/pages/pricing', name: 'Blocked Numbers' }
+			{ id: uuid(), link: '/pages/settings', name: 'Routines'},
+			// { id: uuid(), link: '/pages/pricing', name: 'Inbox'},
+			// { id: uuid(), link: '/pages/pricing', name: 'Blocked Numbers' }
 		]
 	},	
 	{
 		id: uuid(),
-		title: 'Contacts',
-		icon: 'phone',
+		title: 'Address book',
+		icon: 'book',
 		children: [
-			{ id: uuid(), link: '/pages/profile', name: 'Address Book' },
-			{ id: uuid(), link: '/pages/settings', name: 'Lists'},
+			{ id: uuid(), link: '/book/contacts', name: 'Contacts' },
+			{ id: uuid(), link: '/book/lists', name: 'Lists'},
 		]
 	},
 

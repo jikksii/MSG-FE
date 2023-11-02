@@ -23,10 +23,7 @@ const Home = () => {
                         <div>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className="mb-2 mb-lg-0">
-                                    <h3 className="mb-0  text-white">Projects</h3>
-                                </div>
-                                <div>
-                                    <Link href="#" className="btn btn-white">Create New Project</Link>
+                                    <h3 className="mb-0  text-white">Dashboard</h3>
                                 </div>
                             </div>
                         </div>
@@ -48,13 +45,6 @@ const Home = () => {
 
                         {/* Tasks Performance  */}
                         <TasksPerformance />
-
-                    </Col>
-                    {/* card  */}
-                    <Col xl={8} lg={12} md={12} xs={12}>
-
-                        {/* Teams  */}
-                        <Teams />
 
                     </Col>
                 </Row>

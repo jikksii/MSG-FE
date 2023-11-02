@@ -1,36 +1,18 @@
 // import node module libraries
-import React from "react";
+import React, { useState } from "react";
 import Link from 'next/link';
 import { Col, Card, Dropdown, Image } from 'react-bootstrap';
-import { MoreVertical } from 'react-feather';
+import { MoreVertical, PlusCircle } from 'react-feather';
+
 
 // import required data files
 import ProjectsContributionsData from 'data/profile/ProjectsContributionsData';
 
-const AddressBookLists = () => {
+const AddressBookLists = ({onListSelect,onListAddClicked}) => {
 
 
 
-    const list = [
-        {
-            id: 1,
-            projectName: "Address book list 1",
-            description: "List description and details about...",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 2,
-            projectName: "Address book list 1",
-            description: "List description and details about...",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 3,
-            projectName: "Address book list 1",
-            description: "List description and details about...",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-    ];
+    
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         (<Link
             href=""
@@ -64,14 +46,68 @@ const AddressBookLists = () => {
         );
     };
 
+    const [addressBookLists,setAddressBookLists] = useState(
+        [
+            {
+                id: 1,
+                name: "Address book list 1",
+                description: "List description and details about...",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+            {
+                id: 2,
+                name: "Address book list 2",
+                description: "List description and details about...",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+            {
+                id: 3,
+                name: "Address book list 3",
+                description: "List description and details about...",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+            {
+                id: 4,
+                name: "Address book list 4",
+                description: "List description and details about...",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+            {
+                id: 5,
+                name: "Address book list 5",
+                description: "List description and details about...",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+        ]
+    )
+
+    const [selectedAddressBookList,setSelectedAddressBookList] = useState(null);
+
+
+    const addButtonClickHandler = (event) => {
+        event.preventDefault();
+        onListAddClicked();
+    }
+
+    const listSelectHandler = (list) => {
+        setSelectedAddressBookList(list);
+        onListSelect(list)
+    }
     return (
         <Col xl={4} lg={12} md={12} xs={12} className="mb-6">
             <Card>
                 <Card.Body>
-                    <Card.Title as="h4">Address Book Lists</Card.Title>
-                    {list.map((item, index) => {
+                    <Card.Title as="h4"></Card.Title>
+                    <Card.Title as="h4" className="d-flex justify-content-between align-items-center">
+                        <label>Address Book Lists</label>
+
+                        <div><a onClick={addButtonClickHandler} href="#"><PlusCircle color="green"/></a> </div>
+                        
+                    </Card.Title>
+                    {addressBookLists.map((item, index) => {
                         return (
-                            <div className="d-md-flex justify-content-between align-items-center mb-4" key={index}>
+                            <div onClick={() => listSelectHandler(item)} 
+                            className={`d-md-flex p-2 justify-content-between align-items-center mb-4 hover-pointer hover-bg-light ${item.id === selectedAddressBookList?.id ? "bg-gray-200" : ""}`} key={index}>
                                 <div className="d-flex align-items-center">
                                     <div>
                                         <div className={`icon-shape icon-md border p-4 rounded-1 ${item.brandLogoBg}`}>
@@ -81,12 +117,12 @@ const AddressBookLists = () => {
                                     {/* text */}
                                     <div className="ms-3 ">
                                         <h5 className="mb-1">
-                                            <Link href="#" className="text-inherit">{item.projectName}</Link>
+                                            <span href="#" className="text-inherit">{item.name}</span>
                                         </h5>
                                         <p className="mb-0 fs-5 text-muted">{item.description}</p>
                                     </div>
                                 </div>
-                                <div className="d-flex align-items-center ms-10 ms-md-0 mt-3">
+                                <div className="d-flex align-items-center ms-10 ms-md-0">
                                     <div>
                                         {/* dropdown */}
                                         <ActionMenu/>

@@ -16,7 +16,7 @@ import {
 import AddressBookLists from 'sub-components/book/AddressBookLists';
 import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
 import { MoreHorizontal, MoreVertical } from 'react-feather';
 
@@ -75,63 +75,43 @@ const Contacts = () => {
 
     }
 
-    const list = [
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-    ];
+    const [selectedAddressBookList,setSelectedAddressBookList] = useState(null);
+    const [contacts,setContacts] = useState(
+        [
+            {
+                id: 1,
+                first_name: "Giorgi",
+                last_name: "Jikia",
+                gender : "Male",
+                phone_number : "595100506",
+                email : "giorgiijikia@gmail.com",
+                date_of_birth : "1998-13-05",
+                note : "Some note",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+            {
+                id: 1,
+                first_name: "Giorgi",
+                last_name: "Jikia",
+                gender : "Male",
+                phone_number : "595100506",
+                email : "giorgiijikia@gmail.com",
+                date_of_birth : "1998-13-05",
+                note : "Some note",
+                brandLogo: '/images/brand/slack-logo.svg'
+            },
+        ]
+    )
+
+    const listSelectHandler = (list) => {
+        setSelectedAddressBookList(list)
+    }
+
+    const onListAddHandler = () => {
+        console.log("Add new group");
+    }
+
+
   return (
     <Container fluid className="p-6">
 
@@ -140,8 +120,9 @@ const Contacts = () => {
         <Row className='justify-content-start'>
 
           {/* Projects Contributions */}
-          <AddressBookLists />
-          <ServerSideTable options={options} title={"Title here"}  data={list}/>
+          <AddressBookLists onListSelect = {listSelectHandler}/>
+          {selectedAddressBookList && <ServerSideTable options={options} title={`${selectedAddressBookList.name} contacts`}  data={contacts}/>}
+          {!selectedAddressBookList && <Col xl={8} lg={12} md={12} xs={12} className="mb-6 d-flex justify-content-center align-items-center"> <span>Select Address book list</span> </Col>}
         </Row>
       </div>
 

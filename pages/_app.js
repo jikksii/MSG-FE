@@ -5,8 +5,10 @@ import { NextSeo } from 'next-seo';
 import SSRProvider from 'react-bootstrap/SSRProvider';
 import { Analytics } from '@vercel/analytics/react';
 
+
 // import theme style scss file
 import 'styles/theme.scss';
+import 'styles/my-styles.css';
 
 // import default layouts
 import DefaultDashboardLayout from 'layouts/DefaultDashboardLayout';

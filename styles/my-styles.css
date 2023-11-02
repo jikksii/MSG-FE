@@ -1,0 +1,13 @@
+.hover-pointer:hover{
+    cursor: pointer;;
+}
+
+.hover-bg-light:hover{
+    background-color: aliceblue;
+}
+
+
+.bg-gray-200{
+    background-color: #d0deeb;
+}
+

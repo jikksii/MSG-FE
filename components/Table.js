@@ -2,14 +2,9 @@
 import React from "react";
 import Link from 'next/link';
 import { Col, Card, Dropdown, Image, Tab, Nav, Pagination, Form, Table } from 'react-bootstrap';
-import { MoreVertical } from 'react-feather';
+import { MoreVertical, PlusCircle } from 'react-feather';
 
 const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
-
-    console.log(options.searchable);
-    console.log(options.onSearchHandler);
-    console.log(options.columns);
-    console.log(options.title);
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         (<Link
@@ -43,7 +38,7 @@ const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
 
                         {
                             options.insertable && 
-                            <div>Add</div>
+                            <div><a onClick={(e) => e.preventDefault()} href="#"><PlusCircle color="green"/></a> </div>
                         }
                         
                     </Card.Title>
@@ -51,21 +46,20 @@ const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
                         <thead className="table-light">
                             <tr>
                                 {options.columns.map((item, index) => {
-                                    return <th key={index} scope="col">{item.label}</th>;
+                                    return <th key={"header_" + index} scope="col">{item.label}</th>;
                                 })}
-                                {options.hasActions && <th scope="col">Actions</th>}
+                                {options.hasActions && <th key={`header_0`} scope="col">Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((item, index) => {
+                            {data.map((item, index1) => {
                                 return(
-                                    <>
-                                        <tr>
-                                            {options.columns.map((column,index) => {
+                                    <tr key={`ROW_${index1}`}>
+                                            {options.columns.map((column,index2) => {
                                                 if(column.defaultRender){
-                                                    return <td key={index} scope="row">{item[column.name]}</td>
+                                                    return <td key={`Table_row_${index2}_${index1}`} scope="row">{item[column.name]}</td>
                                                 }else{
-                                                    return <td key={index} scope="row">
+                                                    return <td key={`Table_row_${index2}_${index1}`} scope="row">
                                                         {column.overrideRenderHandler(item)}
                                                     </td>
                                                 }
@@ -73,7 +67,7 @@ const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
                                             })}
 
                                             {options.hasActions &&
-                                            <td key={index} scope="row">
+                                            <td key={`DropDown_${index1}`} scope="row">
                                                 <Dropdown>
                                                     <Dropdown.Toggle as={CustomToggle}>
                                                         <MoreVertical size="15px" className="text-muted" />
@@ -82,9 +76,7 @@ const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
                                                  </Dropdown>
                                             </td>
                                             }
-										</tr>
-                                        
-                                    </>
+									</tr>
                                 )
                             })
                             }

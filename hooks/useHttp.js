@@ -25,8 +25,17 @@ const useHttp = (applyData, handleError) => {
                 setIsLoading(false);
                 applyData(data)
             })
-            .catch(err => {
-                handleError(err)
+            .catch(error => {
+                const { request, response } = error;
+                if (response) {
+                    handleError(error)
+                  } else if (request) {
+                    //request sent but no response received
+                    console.log("Timeouted")
+                  } else {
+                    // Something happened in setting up the request that triggered an Error
+                    throw error;
+                  }
             })
 
     }, [applyData, handleError]);

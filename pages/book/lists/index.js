@@ -19,6 +19,7 @@ import ServerSideTable from 'components/Table';
 import React, { useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
 import { MoreHorizontal, MoreVertical } from 'react-feather';
+import useHttp from 'hooks/useHttp';
 
 const Contacts = () => {
 
@@ -33,18 +34,19 @@ const Contacts = () => {
         },
         columns : [
             {
-                name : "Full name",
-                label :"Full name",
-                defaultRender: false,
-                overrideRenderHandler: function(item){
-                    return <div>{`${item.first_name} ${item.last_name}`}</div>
-                }
-            },
-            {
                 name : "phone_number",
                 label :"Phone number",
                 defaultRender: true
             },
+            {
+                name : "Full name",
+                label :"Full name",
+                defaultRender: false,
+                overrideRenderHandler: function(item){
+                    return <div>{`${item.first_name || ''} ${item.last_name || ''}`}</div>
+                }
+            },
+            
             {
                 name : "email",
                 label :"Email",
@@ -76,35 +78,27 @@ const Contacts = () => {
     }
 
     const [selectedAddressBookList,setSelectedAddressBookList] = useState(null);
-    const [contacts,setContacts] = useState(
-        [
-            {
-                id: 1,
-                first_name: "Giorgi",
-                last_name: "Jikia",
-                gender : "Male",
-                phone_number : "595100506",
-                email : "giorgiijikia@gmail.com",
-                date_of_birth : "1998-13-05",
-                note : "Some note",
-                brandLogo: '/images/brand/slack-logo.svg'
-            },
-            {
-                id: 1,
-                first_name: "Giorgi",
-                last_name: "Jikia",
-                gender : "Male",
-                phone_number : "595100506",
-                email : "giorgiijikia@gmail.com",
-                date_of_birth : "1998-13-05",
-                note : "Some note",
-                brandLogo: '/images/brand/slack-logo.svg'
-            },
-        ]
-    )
+    const [contacts,setContacts] = useState([])
+
+    const handleSuccessfullFetch = (data) => {
+        setContacts(data.data);
+    }
+
+    const handleFetchError = (error) =>{
+        console.log(error)
+    }
+    const { isLoading: isFetchingLists , sendRequest: fetchContacts } = useHttp(handleSuccessfullFetch, handleFetchError)
+    
 
     const listSelectHandler = (list) => {
         setSelectedAddressBookList(list)
+        if(list){
+            fetchContacts({
+                method: 'GET',
+                url: `/addressBook/lists/${list.id}/contacts`
+            })
+        }
+
     }
 
     const onListAddHandler = () => {
@@ -121,7 +115,7 @@ const Contacts = () => {
 
           {/* Projects Contributions */}
           <AddressBookLists onListSelect = {listSelectHandler}/>
-          {selectedAddressBookList && <ServerSideTable options={options} title={`${selectedAddressBookList.name} contacts`}  data={contacts}/>}
+          {selectedAddressBookList  && <ServerSideTable className="min-vh-50" options={options} title={`${selectedAddressBookList.name} contacts`}  data={contacts}/>}
           {!selectedAddressBookList && <Col xl={8} lg={12} md={12} xs={12} className="mb-6 d-flex justify-content-center align-items-center"> <span>Select Address book list</span> </Col>}
         </Row>
       </div>

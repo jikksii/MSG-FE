@@ -1,10 +1,10 @@
 // import node module libraries
 import React from "react";
 import Link from 'next/link';
-import { Col, Card, Dropdown, Image, Tab, Nav, Pagination, Form, Table } from 'react-bootstrap';
+import { Col, Card, Dropdown, Image, Tab, Nav, Pagination, Form, Table, Row } from 'react-bootstrap';
 import { MoreVertical, PlusCircle } from 'react-feather';
 
-const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
+const ServerSideTable = ({className,options,data, title , xl, lg, md, xs}) => {
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         (<Link
@@ -21,7 +21,7 @@ const ServerSideTable = ({options,data, title , xl, lg, md, xs}) => {
 
     CustomToggle.displayName = 'CustomToggle';
     return (
-        <Col xl={xl ? xl :8} lg={lg ? lg :12} md={md ? md :12} xs={xs ? xs:12} className="mb-6">
+        <Col xl={xl ? xl :8} lg={lg ? lg :12} md={md ? md :12} xs={xs ? xs:12} className={`mb-6 ${className}`}>
             <Card>
                 <Card.Body>
                     <Card.Title as="h4" className="d-flex justify-content-between align-items-center">

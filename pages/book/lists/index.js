@@ -1,5 +1,5 @@
 // import node module libraries
-import { Col, Row, Container, Dropdown } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown, Modal, Button } from 'react-bootstrap';
 
 // import widget as custom components
 import { PageHeading } from 'widgets'
@@ -65,7 +65,10 @@ const Contacts = () => {
                     <Dropdown.Item eventKey="1">
                         Edit {item.id}
                     </Dropdown.Item>
-                    <Dropdown.Item eventKey="2">
+                    <Dropdown.Item onClick={() => {
+                        setDeleteModalShow(true)
+                        setDeleteContact(item)
+                    }} eventKey="2">
                         Delete
                     </Dropdown.Item>
                     <Dropdown.Item eventKey="2">
@@ -101,8 +104,25 @@ const Contacts = () => {
 
     }
 
-    const onListAddHandler = () => {
-        console.log("Add new group");
+    let handleDeleteSuccess = () => {
+        let newList = contacts.filter((element) => element.id !== deleteContact.id);
+        setDeleteContact(null);
+        setDeleteModalShow(false);
+        setContacts(newList);
+    }
+
+    let handleDeleteError = (error) => {
+        console.log(error);
+    }
+    const {sendRequest: destroyContact } = useHttp(handleDeleteSuccess, handleDeleteError)
+	const [deleteModalShow, setDeleteModalShow] = useState(false);
+    const [deleteContact,setDeleteContact] = useState(null);
+
+    const deleteContactHandler =  () => {
+        destroyContact({
+            method:'DELETE',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts/${deleteContact.id}`
+        })
     }
 
 
@@ -118,6 +138,25 @@ const Contacts = () => {
           {selectedAddressBookList  && <ServerSideTable className="min-vh-50" options={options} title={`${selectedAddressBookList.name} contacts`}  data={contacts}/>}
           {!selectedAddressBookList && <Col xl={8} lg={12} md={12} xs={12} className="mb-6 d-flex justify-content-center align-items-center"> <span>Select Address book list</span> </Col>}
         </Row>
+
+        <Modal
+            show={deleteModalShow}
+            onHide={() => {
+                setDeleteModalShow(false)
+                setDeleteContact(null) 
+            }}
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Are you sure you want delete list?
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Footer>
+                <Button onClick={deleteContactHandler}>Delete</Button>
+            </Modal.Footer>
+        </Modal>
       </div>
 
     </Container>

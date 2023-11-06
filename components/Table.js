@@ -20,6 +20,11 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs}) => {
     ));
 
     CustomToggle.displayName = 'CustomToggle';
+
+    const onAddButtonClickedHandler =  (event) => {
+        event.preventDefault();
+        options.onInsertButtonClick();
+    }
     return (
         <Col xl={xl ? xl :8} lg={lg ? lg :12} md={md ? md :12} xs={xs ? xs:12} className={`mb-6 ${className}`}>
             <Card>
@@ -38,7 +43,7 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs}) => {
 
                         {
                             options.insertable && 
-                            <div><a onClick={(e) => e.preventDefault()} href="#"><PlusCircle color="green"/></a> </div>
+                            <div><a onClick={onAddButtonClickedHandler} href="#"><PlusCircle color="green"/></a> </div>
                         }
                         
                     </Card.Title>

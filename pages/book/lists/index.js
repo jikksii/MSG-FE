@@ -1,5 +1,5 @@
 // import node module libraries
-import { Col, Row, Container, Dropdown, Modal, Button } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown, Modal, Button, Form } from 'react-bootstrap';
 
 // import widget as custom components
 import { PageHeading } from 'widgets'
@@ -56,7 +56,7 @@ const Contacts = () => {
         ],
         insertable : true,
         onInsertButtonClick : function(){
-            console.log("onInsertButtonClick")
+            setModalShow(true)
         },
         hasActions : true,
         actions : function(item){
@@ -126,6 +126,58 @@ const Contacts = () => {
     }
 
 
+
+
+
+
+    // Store new contact
+
+    const [modalShow, setModalShow] = useState(false);
+    const [errors,setErrors] = useState({});
+    const [newContact,setNewContact] = useState({
+        phone_number : '',
+        first_name : '',
+        last_name : '',
+        email : '',
+        date_of_birth : '',
+    })
+    const onModalHideHandler = ()  => {
+        setModalShow(false);
+        setNewContact({
+            phone_number : '',
+            first_name : '',
+            last_name : '',
+            email : '',
+            date_of_birth : '',
+        })
+        setErrors({})
+    }
+
+
+    let handleStoreSuccess = (response) => {
+        fetchContacts({
+            method: 'GET',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts`
+        })
+        onModalHideHandler()
+    }
+    let handleStoreError = (error) => {
+        console.log(error);
+        if (error.response.status === 422){
+            setErrors(error.response.data.errors)
+        }
+    }
+    const { isLoading: isCreating , sendRequest: storeList } = useHttp(handleStoreSuccess, handleStoreError)
+
+    const createNewContactHandler = () => {
+        console.log(newContact)
+        storeList({
+            method: 'POST',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts`,
+            data:newContact
+        })
+    }
+
   return (
     <Container fluid className="p-6">
 
@@ -157,6 +209,142 @@ const Contacts = () => {
                 <Button onClick={deleteContactHandler}>Delete</Button>
             </Modal.Footer>
         </Modal>
+
+        <Modal
+                show={modalShow}
+                onHide={onModalHideHandler}
+				aria-labelledby="contained-modal-title-vcenter"
+				centered
+			>
+				<Modal.Header closeButton>
+					<Modal.Title id="contained-modal-title-vcenter">
+						New Contact
+					</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+                    <Form>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Phone number</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={errors?.phone_number} 
+                                    value={newContact.phone_number} 
+                                    type="text" 
+                                    onChange={(e) => setNewContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            phone_number:e.target.value
+                                        }
+                                    })}
+                                    required 
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                    {errors?.phone_number?.map((error,index) => {
+                                        return <li key={index}>{error}</li>
+                                    })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >First name</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={errors?.first_name} 
+                                    value={newContact.first_name} 
+                                    type="text" 
+                                    onChange={(e) => setNewContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            first_name:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {errors?.first_name?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Last name</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={errors?.last_name} 
+                                    value={newContact.last_name} 
+                                    type="text" 
+                                    onChange={(e) => setNewContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            last_name:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {errors?.last_name?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Email</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={errors?.email} 
+                                    value={newContact.email} 
+                                    type="text" 
+                                    onChange={(e) => setNewContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            email:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {errors?.email?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Date of birth</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={errors?.date_of_birth} 
+                                    value={newContact.date_of_birth} 
+                                    type="date" 
+                                    onChange={(e) => setNewContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            date_of_birth:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {errors?.date_of_birth?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                    </Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={createNewContactHandler}>Create</Button>
+				</Modal.Footer>
+			</Modal>
       </div>
 
     </Container>

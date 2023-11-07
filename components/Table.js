@@ -26,6 +26,28 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs,current
         options.onInsertButtonClick();
     }
 
+    const generatePaginationButtons = () => {
+
+        let array = [-1,0,1];
+        if(currentPage === 1){
+            array = [0,1,2];
+        }
+
+        if(currentPage === lastPage){
+            array = [-2,-1,0];
+        }
+        let list = [];
+        array.forEach((i,index) => {
+            let value = currentPage + i;
+            if(!(value < 1 || value > lastPage)){
+                list.push(
+                    <Pagination.Item  onClick={() => handlePageChange(value)} active={value == currentPage}>{value}</Pagination.Item> 
+                )
+            }
+        });
+        return list;
+    }
+
     return (
         <Col xl={xl ? xl :8} lg={lg ? lg :12} md={md ? md :12} xs={xs ? xs:12} className={`mb-6 ${className}`}>
             <Card>
@@ -93,11 +115,8 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs,current
 
                         <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft size="18px" /></Pagination.Prev> 
 
-                        {currentPage !== 1 && <Pagination.Item onClick={() => handlePageChange(currentPage - 1)}>{currentPage - 1}</Pagination.Item>}
 
-                        <Pagination.Item onClick={() => handlePageChange(currentPage)} active>{currentPage}</Pagination.Item>     
-
-                        {currentPage !== lastPage && <Pagination.Item onClick={() => handlePageChange(currentPage + 1)}>{currentPage + 1}</Pagination.Item>}  
+                        {generatePaginationButtons()}
 
                         <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === lastPage}><ChevronRight size="18px"  /></Pagination.Next>
                         

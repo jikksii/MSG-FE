@@ -202,7 +202,13 @@ const AddressBookLists = ({onListSelect,onListAddClicked}) => {
                         
                     </Card.Title>
 
-                    {isFetchingLists && <div>Loading....</div>}
+                    {isFetchingLists && 
+                        <div className="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                                        }
                     {!isFetchingLists && addressBookLists.map((item, index) => {
                         return (
                             <div
@@ -231,7 +237,7 @@ const AddressBookLists = ({onListSelect,onListAddClicked}) => {
                         )
                     })}
                     {
-                        addressBookLists.length == 0 && <div>List is empty</div>
+                        !isFetchingLists && addressBookLists.length == 0 && <div>List is empty</div>
                     }
                 </Card.Body>
             </Card>

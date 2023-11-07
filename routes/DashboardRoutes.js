@@ -30,11 +30,12 @@ export const DashboardMenu = [
 		icon: 'home',
 		link: '/'
 	},
-	// {
-	// 	id: uuid(),
-	// 	title: 'LAYOUTS & PAGES',
-	// 	grouptitle: true
-	// },
+	{
+		id: uuid(),
+		title: 'Address book',
+		icon: 'book',
+		link: '/book'
+	},
 	{
 		id: uuid(),
 		title: 'SMS',
@@ -46,15 +47,6 @@ export const DashboardMenu = [
 			{ id: uuid(), link: '/pages/settings', name: 'Routines'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Inbox'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Blocked Numbers' }
-		]
-	},	
-	{
-		id: uuid(),
-		title: 'Address book',
-		icon: 'book',
-		children: [
-			{ id: uuid(), link: '/book/contacts', name: 'Contacts' },
-			{ id: uuid(), link: '/book/lists', name: 'Lists'},
 		]
 	},
 

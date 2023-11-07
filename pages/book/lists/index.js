@@ -62,17 +62,17 @@ const Contacts = () => {
         actions : function(item){
             return (
                 <Dropdown.Menu align={'end'}>
-                    <Dropdown.Item eventKey="1">
-                        Edit {item.id}
+                    <Dropdown.Item  onClick={() => {
+                        setDetailsModalShow(true)
+                        setUpdatingContact(item)
+                    }} eventKey="2">
+                        Details
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => {
                         setDeleteModalShow(true)
                         setDeleteContact(item)
                     }} eventKey="2">
                         Delete
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="2">
-                        Details
                     </Dropdown.Item>
                 </Dropdown.Menu>
             )
@@ -105,10 +105,13 @@ const Contacts = () => {
     }
 
     let handleDeleteSuccess = () => {
-        let newList = contacts.filter((element) => element.id !== deleteContact.id);
+
+        fetchContacts({
+            method: 'GET',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts`
+        })
         setDeleteContact(null);
         setDeleteModalShow(false);
-        setContacts(newList);
     }
 
     let handleDeleteError = (error) => {
@@ -178,6 +181,45 @@ const Contacts = () => {
         })
     }
 
+
+
+
+    // Details modal
+
+    const [detailsModalShow,setDetailsModalShow] = useState(false);
+    const [updateContactErrors,setUpdateContactErrors] = useState({});
+    const [updatingContact,setUpdatingContact] = useState(null)
+
+    const onDetailsModalHideHandler = () => {
+        
+        setDetailsModalShow(false)
+        setUpdateContactErrors({})
+        setUpdatingContact(null)
+    }
+
+    const handleUpdateSuccess =  () => {
+        console.log(contacts,updatingContact);
+        let newList = contacts.map((element) => element.id === updatingContact.id ? updatingContact : element);
+        onDetailsModalHideHandler()
+        setContacts(newList);
+    }
+
+    const handleUpdateError =  (error) => {
+        console.log(error);
+        if (error.response.status === 422){
+            setUpdateContactErrors(error.response.data.errors)
+        }
+    }
+
+    const { isLoading: isUpdating , sendRequest: updateContactRequest } = useHttp(handleUpdateSuccess, handleUpdateError)
+
+    const updateContactHandler = () => {
+        updateContactRequest({
+            method: 'PUT',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts/${updatingContact.id}`,
+            data:updatingContact
+        })
+    }
   return (
     <Container fluid className="p-6">
 
@@ -344,7 +386,144 @@ const Contacts = () => {
 				<Modal.Footer>
 					<Button onClick={createNewContactHandler}>Create</Button>
 				</Modal.Footer>
-			</Modal>
+		</Modal>
+
+
+        {updatingContact && <Modal
+                show={detailsModalShow}
+                onHide={onDetailsModalHideHandler}
+				aria-labelledby="contained-modal-title-vcenter"
+				centered
+			>
+				<Modal.Header closeButton>
+					<Modal.Title id="contained-modal-title-vcenter">
+						Edit Contact
+					</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+                    <Form>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Phone number</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={updateContactErrors?.phone_number} 
+                                    value={updatingContact.phone_number} 
+                                    type="text" 
+                                    onChange={(e) => setUpdatingContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            phone_number:e.target.value
+                                        }
+                                    })}
+                                    required 
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                    {updateContactErrors?.phone_number?.map((error,index) => {
+                                        return <li key={index}>{error}</li>
+                                    })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >First name</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={updateContactErrors?.first_name} 
+                                    value={updatingContact.first_name} 
+                                    type="text" 
+                                    onChange={(e) => setUpdatingContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            first_name:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {updateContactErrors?.first_name?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Last name</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={updateContactErrors?.last_name} 
+                                    value={updatingContact.last_name} 
+                                    type="text" 
+                                    onChange={(e) => setUpdatingContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            last_name:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {updateContactErrors?.last_name?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Email</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={updateContactErrors?.email} 
+                                    value={updatingContact.email} 
+                                    type="text" 
+                                    onChange={(e) => setUpdatingContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            email:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {updateContactErrors?.email?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Form.Label className="col-sm-4" >Date of birth</Form.Label>
+                            <Col md={8} xs={12}>
+                                <Form.Control 
+                                    isInvalid={updateContactErrors?.date_of_birth} 
+                                    value={updatingContact.date_of_birth} 
+                                    type="date" 
+                                    onChange={(e) => setUpdatingContact((prevState) => {
+                                        return {
+                                            ...prevState,
+                                            date_of_birth:e.target.value
+                                        }
+                                    })}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    <ul>
+                                        {updateContactErrors?.date_of_birth?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                    </ul>
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Row>
+                    </Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={updateContactHandler}>Save</Button>
+				</Modal.Footer>
+		</Modal>}
       </div>
 
     </Container>

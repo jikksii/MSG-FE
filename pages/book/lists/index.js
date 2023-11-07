@@ -1,5 +1,5 @@
 // import node module libraries
-import { Col, Row, Container, Dropdown, Modal, Button, Form } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown, Modal, Button, Form, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 // import widget as custom components
 import { PageHeading } from 'widgets'
@@ -137,6 +137,7 @@ const Contacts = () => {
 
     const [modalShow, setModalShow] = useState(false);
     const [errors,setErrors] = useState({});
+    const [singleContact,setSingleContact] = useState(true)
     const [newContact,setNewContact] = useState({
         phone_number : '',
         first_name : '',
@@ -154,6 +155,9 @@ const Contacts = () => {
             date_of_birth : '',
         })
         setErrors({})
+        setImportErrors(null);
+        setImportFile(null)
+        setSingleContact(true)
     }
 
 
@@ -220,6 +224,48 @@ const Contacts = () => {
             data:updatingContact
         })
     }
+
+
+
+
+    const handleImportSuccess = () => {
+        fetchContacts({
+            method: 'GET',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts`
+        })
+        onModalHideHandler()
+    }
+
+    const handleImportError = (error) => {
+        if (error.response.status === 422){
+            setImportErrors(error.response.data.errors)
+        }
+    }
+
+    const {sendRequest: importContactsRequest} = useHttp(handleImportSuccess, handleImportError)
+    const [importFile,setImportFile] = useState(null);
+    const [importErrors,setImportErrors] = useState(null)
+    const importFileHandler = () => {
+        if (importFile) {
+            console.log("Uploading file...");
+        
+            const formData = new FormData();
+            formData.append("file", importFile);
+        
+            importContactsRequest({
+                method : 'POST',
+                url: `/addressBook/lists/${selectedAddressBookList.id}/contacts/import`,
+                data: {
+                    contacts : importFile
+                },
+                headers  :{
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json'
+                }
+            })
+        }
+    }
+
   return (
     <Container fluid className="p-6">
 
@@ -262,9 +308,13 @@ const Contacts = () => {
 					<Modal.Title id="contained-modal-title-vcenter">
 						New Contact
 					</Modal.Title>
+                    <div className='ms-10'>
+                        <span onClick={() => setSingleContact(true)} className={`px-2 hover-pointer ${singleContact ? 'text-dark ' : ''}`}>Single</span>
+                        <span onClick={() => setSingleContact(false)} className={`px-2 hover-pointer ${!singleContact ? 'text-dark ' : ''}`}>File</span>
+                    </div>
 				</Modal.Header>
 				<Modal.Body>
-                    <Form>
+                    {singleContact &&<Form>
                         <Row className="mb-3">
                             <Form.Label className="col-sm-4" >Phone number</Form.Label>
                             <Col md={8} xs={12}>
@@ -381,10 +431,38 @@ const Contacts = () => {
                                 </Form.Control.Feedback>
                             </Col>
                         </Row>
-                    </Form>
+                    </Form>}
+                    {!singleContact && 
+                    
+                        <Form>
+                            <Row className="mb-3">
+                                <Form.Label className="col-sm-4" >File</Form.Label>
+                                <Col md={8} xs={12}>
+                                    <Form.Control 
+                                        isInvalid={importErrors}
+                                        type="file"
+                                        accept=".xlsx , .xls"
+                                        onChange={(event) => {
+                                            setImportFile(event.target.files[0])
+                                        }}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        <ul>
+                                        {importErrors?.map((error,index) => {
+                                            return <li key={index}>{error}</li>
+                                        })}
+                                        </ul>
+                                    </Form.Control.Feedback>
+                                </Col>
+                            </Row>
+                        </Form>
+                    
+                    
+                    }
 				</Modal.Body>
 				<Modal.Footer>
-					<Button onClick={createNewContactHandler}>Create</Button>
+                    {singleContact  && <Button onClick={createNewContactHandler}>Create</Button>}
+                    {!singleContact  && <Button onClick={importFileHandler}>Import</Button>}
 				</Modal.Footer>
 		</Modal>
 

@@ -18,6 +18,9 @@ const useHttp = (applyData, handleError) => {
             url: requestConfig.url,
             data: requestConfig.data && requestConfig.method !== 'GET' ? requestConfig.data : null,
             params: requestConfig.method === 'GET' || !requestConfig.method ? requestConfig.data : null,
+            headers: requestConfig.headers ? requestConfig.headers :{
+                'Accept': 'application/json'
+            }
             
         })
             .then(response => response.data)

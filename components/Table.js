@@ -2,9 +2,9 @@
 import React from "react";
 import Link from 'next/link';
 import { Col, Card, Dropdown, Image, Tab, Nav, Pagination, Form, Table, Row } from 'react-bootstrap';
-import { MoreVertical, PlusCircle } from 'react-feather';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoreVertical, PlusCircle } from 'react-feather';
 
-const ServerSideTable = ({className,options,data, title , xl, lg, md, xs}) => {
+const ServerSideTable = ({className,options,data, title , xl, lg, md, xs,currentPage,lastPage,handlePageChange}) => {
 
     const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
         (<Link
@@ -25,6 +25,7 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs}) => {
         event.preventDefault();
         options.onInsertButtonClick();
     }
+
     return (
         <Col xl={xl ? xl :8} lg={lg ? lg :12} md={md ? md :12} xs={xs ? xs:12} className={`mb-6 ${className}`}>
             <Card>
@@ -88,11 +89,19 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs}) => {
                         </tbody>
                     </Table>
                     <Pagination>
-                        <Pagination.Prev disabled>Previous</Pagination.Prev>
-                        <Pagination.Item>{1}</Pagination.Item>
-                        <Pagination.Item active>{2}</Pagination.Item>
-                        <Pagination.Item>{3}</Pagination.Item>
-                        <Pagination.Next>Next</Pagination.Next>
+                        <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1}><ChevronsLeft size="18px" /></Pagination.First> 
+
+                        <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft size="18px" /></Pagination.Prev> 
+
+                        {currentPage !== 1 && <Pagination.Item onClick={() => handlePageChange(currentPage - 1)}>{currentPage - 1}</Pagination.Item>}
+
+                        <Pagination.Item onClick={() => handlePageChange(currentPage)} active>{currentPage}</Pagination.Item>     
+
+                        {currentPage !== lastPage && <Pagination.Item onClick={() => handlePageChange(currentPage + 1)}>{currentPage + 1}</Pagination.Item>}  
+
+                        <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === lastPage}><ChevronRight size="18px"  /></Pagination.Next>
+                        
+                        <Pagination.Last onClick={() => handlePageChange(lastPage)}disabled={currentPage === lastPage}><ChevronsRight size="18px" /></Pagination.Last> 
                     </Pagination>
                 </Card.Body>
             </Card>

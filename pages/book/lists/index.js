@@ -82,9 +82,14 @@ const Contacts = () => {
 
     const [selectedAddressBookList,setSelectedAddressBookList] = useState(null);
     const [contacts,setContacts] = useState([])
+    const [currentPage,setCurrentPage] = useState(1);
+    const [lastPage,setLastPage] = useState(1);
 
     const handleSuccessfullFetch = (data) => {
-        setContacts(data.data);
+        console.log(data);
+        setContacts(data.data.data);
+        setCurrentPage(data.data.current_page)
+        setLastPage(data.data.last_page)
     }
 
     const handleFetchError = (error) =>{
@@ -108,7 +113,7 @@ const Contacts = () => {
 
         fetchContacts({
             method: 'GET',
-            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts`
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts?page=${currentPage}`
         })
         setDeleteContact(null);
         setDeleteModalShow(false);
@@ -128,7 +133,12 @@ const Contacts = () => {
         })
     }
 
-
+    const handlePageChange = (page) => {
+        fetchContacts({
+            method: 'GET',
+            url: `/addressBook/lists/${selectedAddressBookList.id}/contacts?page=${page}`
+        })
+    }
 
 
 
@@ -275,7 +285,16 @@ const Contacts = () => {
 
           {/* Projects Contributions */}
           <AddressBookLists onListSelect = {listSelectHandler}/>
-          {selectedAddressBookList  && <ServerSideTable className="min-vh-50" options={options} title={`${selectedAddressBookList.name} contacts`}  data={contacts}/>}
+          {selectedAddressBookList  && <ServerSideTable 
+                className="min-vh-50" 
+                options={options} 
+                title={`${selectedAddressBookList.name} contacts`} 
+                currentPage={currentPage}
+                lastPage={lastPage}
+                data={contacts}
+                handlePageChange={handlePageChange}
+            />
+        }
           {!selectedAddressBookList && <Col xl={8} lg={12} md={12} xs={12} className="mb-6 d-flex justify-content-center align-items-center"> <span>Select Address book list</span> </Col>}
         </Row>
 

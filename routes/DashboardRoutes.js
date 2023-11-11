@@ -41,10 +41,10 @@ export const DashboardMenu = [
 		title: 'SMS',
 		icon: 'message-square',
 		children: [
-			{ id: uuid(), link: '/pages/profile', name: 'Create New Messages' },
+			{ id: uuid(), link: '/sms/message', name: 'Create Batch Messages' },
 			{ id: uuid(), link: '/sms/queue', name: 'Queue' },
-			{ id: uuid(), link: '/pages/settings', name: 'Messages Archive'},
-			{ id: uuid(), link: '/pages/settings', name: 'Routines'},
+			{ id: uuid(), link: '/pages/settings', name: 'Batch Messages Archive'},
+			{ id: uuid(), link: '/pages/settings', name: 'Batch Messages Routines'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Inbox'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Blocked Numbers' }
 		]

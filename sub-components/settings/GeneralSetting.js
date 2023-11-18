@@ -9,19 +9,25 @@ import { FormSelect, DropFiles } from 'widgets';
 
 const GeneralSetting = () => {
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [profile, setProfile] = useState({
+    username: "",
+    company: {
+      name: "",
+      address:"",
+      identification_number:""
+    },
+    contact:{
+      first_name:"",
+      last_name:"",
+      phone:"",
+      email:""
+    }
+  })
 
 
   const handleSuccessAuth = useCallback(data => {
-    setFirstName(data.data.first_name);
-    setLastName(data.data.last_name);
-    setEmail(data.data.email);
-    setPhone(data.data.phone);
-    setUsername(data.data.username)
+    console.log(data.data);
+    setProfile(data.data)
   }, []);
 
   const handleError = (error) => {
@@ -67,35 +73,68 @@ const GeneralSetting = () => {
                   <label htmlFor="username" className="col-sm-4 col-form-label
                     form-label">Username</label>
                   <div className="col-md-8 col-12">
-                    <input readOnly value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control" placeholder="Username" id="username" required />
+                    <input readOnly value={profile.username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control" id="username" required />
                   </div>
                 </Row>
-                {/* row */}
+                <div className="mb-6">
+                  <h4 className="mb-1">Company</h4>
+                </div>
                 <Row className="mb-3">
-                  <label htmlFor="fullName" className="col-sm-4 col-form-label
-                    form-label">Full name</label>
-                  <div className="col-sm-4 mb-3 mb-lg-0">
-                    <input readOnly value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" className="form-control" placeholder="First name" id="fullName" required />
-                  </div>
-                  <div className="col-sm-4">
-                    <input readOnly value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" className="form-control" placeholder="Last name" id="lastName" required />
-                  </div>
+                    <Form.Label className="col-sm-4" htmlFor="phone">Name <span className="text-muted"></span></Form.Label>
+                    <Col md={8} xs={12}>
+                      <Form.Control readOnly value={profile.company.name} type="text" />
+                    </Col>
                 </Row>
-                {/* row */}
                 <Row className="mb-3">
-                  <label htmlFor="email" className="col-sm-4 col-form-label
-                    form-label">Email</label>
-                  <div className="col-md-8 col-12">
-                    <input readOnly value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" placeholder="Email" id="email" required />
-                  </div>
+                    <Form.Label className="col-sm-4" htmlFor="phone">Identification<span className="text-muted"></span></Form.Label>
+                    <Col md={8} xs={12}>
+                      <Form.Control readOnly value={profile.company.identification_number} type="text" />
+                    </Col>
                 </Row>
-                {/* row */}
                 <Row className="mb-3">
-                  <Form.Label className="col-sm-4" htmlFor="phone">Phone <span className="text-muted">(Optional)</span></Form.Label>
-                  <Col md={8} xs={12}>
-                    <Form.Control readOnly value={phone} onChange={(e) => setPhone(e.target.value)} type="text" placeholder="Enter Phone" id="phone" />
-                  </Col>
+                    <Form.Label className="col-sm-4" htmlFor="phone">Address <span className="text-muted"></span></Form.Label>
+                    <Col md={8} xs={12}>
+                      <Form.Control readOnly value={profile.company.address} type="text" />
+                    </Col>
                 </Row>
+
+
+                {
+                  
+                  profile.company &&
+                  
+                  <div>
+                    <div className="mb-6">
+                      <h4 className="mb-1">Contact</h4>
+                    </div>
+                    <Row className="mb-3">
+                      <label htmlFor="email" className="col-sm-4 col-form-label
+                        form-label">First Name</label>
+                      <div className="col-md-8 col-12">
+                        <input readOnly value={profile.contact.first_name}  type="text" className="form-control" required />
+                      </div>
+                    </Row>
+                    <Row className="mb-3">
+                      <Form.Label className="col-sm-4" htmlFor="phone">Last Name <span className="text-muted"></span></Form.Label>
+                      <Col md={8} xs={12}>
+                        <Form.Control readOnly value={profile.contact.last_name} type="text" />
+                      </Col>
+                    </Row>
+                    <Row className="mb-3">
+                      <Form.Label className="col-sm-4" htmlFor="phone">Phone Number<span className="text-muted"></span></Form.Label>
+                      <Col md={8} xs={12}>
+                        <Form.Control readOnly value={profile.contact.phone} type="text"/>
+                      </Col>
+                    </Row>
+                    <Row className="mb-3">
+                      <Form.Label className="col-sm-4" htmlFor="phone">Email<span className="text-muted"></span></Form.Label>
+                      <Col md={8} xs={12}>
+                        <Form.Control readOnly value={profile.contact.email} type="text"/>
+                      </Col>
+                    </Row>
+                  </div>
+                }
+                
               </Form>
             </div>
           </Card.Body>

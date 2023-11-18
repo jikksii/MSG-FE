@@ -59,7 +59,7 @@ export const DashboardMenu = [
 			// { id: uuid(), link: '/pages/billing', name: 'Numbers'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Triggers'},
 			// { id: uuid(), link: '/components/modal', name: 'Retail Price list'},
-			{ id: uuid(), link: '/pages/settings', name: 'Profile'},
+			{ id: uuid(), link: '/settings/profile', name: 'Profile'},
 			// { id: uuid(), link: '/components/cards', name: 'System Messages'},
 		]
 	},

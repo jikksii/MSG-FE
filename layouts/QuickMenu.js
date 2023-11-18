@@ -54,7 +54,7 @@ const QuickMenu = ({ handleSignOut }) => {
     const QuickMenuDesktop = () => {
         return (
             <ListGroup as="ul" bsPrefix='navbar-nav' className="navbar-right-wrap ms-auto d-flex nav-top-wrap">
-                <Dropdown as="li" className="stopevent">
+                {/* <Dropdown as="li" className="stopevent">
                     <Dropdown.Toggle as="a"
                         bsPrefix=' '
                         id="dropdownNotification"
@@ -84,7 +84,7 @@ const QuickMenu = ({ handleSignOut }) => {
                             </div>
                         </Dropdown.Item>
                     </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
                 <Dropdown as="li" className="ms-2">
                     <Dropdown.Toggle
                         as="a"
@@ -102,7 +102,7 @@ const QuickMenu = ({ handleSignOut }) => {
                         show
                     >
                         <Dropdown.Item eventKey="2">
-                            <Link href="/pages/settings" className="text-link fw-semi-bold">
+                            <Link href="/settings/profile" className="text-link fw-semi-bold">
                                 <i className="fe fe-user me-2"></i> Edit Profile
                             </Link>
                         </Dropdown.Item>

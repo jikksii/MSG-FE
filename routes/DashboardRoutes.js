@@ -38,13 +38,13 @@ export const DashboardMenu = [
 	},
 	{
 		id: uuid(),
-		title: 'SMS',
+		title: 'Batch Messages',
 		icon: 'message-square',
 		children: [
-			{ id: uuid(), link: '/sms/message', name: 'Create Batch Messages' },
+			{ id: uuid(), link: '/sms/message', name: 'New' },
 			{ id: uuid(), link: '/sms/queue', name: 'Queue' },
-			{ id: uuid(), link: '/pages/settings', name: 'Batch Messages Archive'},
-			{ id: uuid(), link: '/sms/routines', name: 'Batch Messages Routines'},
+			{ id: uuid(), link: '/sms/archive', name: 'Archive'},
+			{ id: uuid(), link: '/sms/routines', name: 'Routines'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Inbox'},
 			// { id: uuid(), link: '/pages/pricing', name: 'Blocked Numbers' }
 		]

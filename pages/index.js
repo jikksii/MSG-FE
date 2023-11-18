@@ -10,12 +10,48 @@ import { StatRightTopIcon } from "widgets";
 import { ActiveProjects, Teams, TasksPerformance } from "sub-components";
 
 // import required data files
-import ProjectsStatsData from "data/dashboard/ProjectsStatsData";
+import {
+	Briefcase,
+    ListTask,
+    People,
+    Bullseye
+} from 'react-bootstrap-icons';
+
+export const ProjectsStats = [
+    {
+       id:1,
+       title : "Active Routines",
+       value : 18,
+       icon: <Briefcase size={18}/>,
+       statInfo: '<span className="text-dark me-2">2</span> Completed' 
+    },
+    {
+        id:2,
+        title : "Total Batch Messages",
+        value : 132,
+        icon: <ListTask size={18}/>,
+        statInfo: '<span className="text-dark me-2">5</span> Sent this month' 
+    },
+    {
+        id:3,
+        title : "Teams",
+        value : 12,
+        icon: <People size={18}/>,
+        statInfo: '<span className="text-dark me-2">1</span> Completed' 
+    },
+    {
+        id:4,
+        title : "Productivity",
+        value : '76%',
+        icon: <Bullseye size={18}/>,
+        statInfo: '<span className="text-dark me-2">5%</span> Completed' 
+    }
+];
 
 const Home = () => {
     return (
         <Fragment>
-            <div className="bg-primary pt-10 pb-21"></div>
+            <div className="bg-secondary pt-10 pb-21"></div>
             <Container fluid className="mt-n22 px-6">
                 <Row>
                     <Col lg={12} md={12} xs={12}>
@@ -28,25 +64,13 @@ const Home = () => {
                             </div>
                         </div>
                     </Col>
-                    {ProjectsStatsData.map((item, index) => {
+                    {ProjectsStats.map((item, index) => {
                         return (
                             <Col xl={3} lg={6} md={12} xs={12} className="mt-6" key={index}>
                                 <StatRightTopIcon info={item} />
                             </Col>
                         )
                     })}
-                </Row>
-
-                {/* Active Projects  */}
-                <ActiveProjects />
-
-                <Row className="my-6">
-                    <Col xl={4} lg={12} md={12} xs={12} className="mb-6 mb-xl-0">
-
-                        {/* Tasks Performance  */}
-                        <TasksPerformance />
-
-                    </Col>
                 </Row>
             </Container>
         </Fragment>

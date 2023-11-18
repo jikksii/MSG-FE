@@ -80,6 +80,11 @@ const SmsQueue = () => {
                 name : "description",
                 label :"Description",
                 defaultRender: true
+            },
+            {
+                name : "message",
+                label :"Message",
+                defaultRender: true
             }
         ],
         insertable : false,

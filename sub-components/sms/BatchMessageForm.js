@@ -151,13 +151,13 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 <div className="border-bottom pb-10">
                     <Row className="mb-3 ">
                         <Col xl={3} lg={6} md={6} xs={12}>
-                            <Form.Label>Periody</Form.Label>
+                            <Form.Label>Periodicity</Form.Label>
                             <Select options={routineTypes.map((e) => {
                                 return {
                                     value : e.id,
                                     label : e.name
                                 }
-                            }) } value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodical"/>
+                            }) } value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodicity"/>
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
                                 {errors?.phone_number?.map((error,index) => {

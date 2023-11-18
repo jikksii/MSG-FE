@@ -16,47 +16,77 @@ import {
 import AddressBookLists from 'sub-components/book/AddressBookLists';
 import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
 import { MoreHorizontal, MoreVertical } from 'react-feather';
+import useHttp from 'hooks/useHttp';
 
 const SmsQueue = () => {
 
 
-   
+    const [list,setList] = useState([]);
+    const [currentPage,setCurrentPage] = useState(1);
+    const [lastPage,setLastPage] = useState(1);
+    const { isLoading: isFetchingLists , sendRequest: fetchOneTimeRoutines } = useHttp(
+        (data) => {
+            setList(data.data.data);
+            setCurrentPage(data.data.current_page)
+            setLastPage(data.data.last_page)
+        }, 
+        (error) =>{
+
+        }
+    )
+
+    const handlePageChange = (page) => {
+        fetchContacts({
+            method: 'GET',
+            url: `/routines/oneTime?page=${page}`
+        })
+    }
+
+    useEffect(() => {
+        fetchOneTimeRoutines(
+            {
+                url:'routines/oneTime',
+                method:'GET'
+            }
+        )
+    },[])
 
 
     const options = {
-        searchable : true,
-        onSearchHandler : function(searchQuery){
-            console.log("onSearchHandler")
-        },
+        searchable : false,
         columns : [
             {
-                name : "Full name",
-                label :"Full name",
+                name:"type",
+                label:"Periodicity",
                 defaultRender: false,
                 overrideRenderHandler: function(item){
-                    return <div>{`${item.first_name} ${item.last_name}`}</div>
+                    return <div>{item.type.name}</div>
                 }
             },
             {
-                name : "phone_number",
-                label :"Phone number",
+                name : "start_date",
+                label :"Send date",
                 defaultRender: true
             },
             {
-                name : "email",
-                label :"Email",
+                name : "next_execution_time",
+                label :"Time",
                 defaultRender: true
             },
-            
+            {
+                name : "description",
+                label :"Description",
+                defaultRender: true
+            }
         ],
-        insertable : true,
+        insertable : false,
         onInsertButtonClick : function(){
             console.log("onInsertButtonClick")
         },
-        hasActions : true,
+        hasActions : false,
         actions : function(item){
             return (
                 <Dropdown.Menu align={'end'}>
@@ -75,75 +105,24 @@ const SmsQueue = () => {
 
     }
 
-    const list = [
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-        {
-            id: 1,
-            first_name: "Giorgi",
-            last_name: "Jikia",
-            gender : "Male",
-            phone_number : "595100506",
-            email : "giorgiijikia@gmail.com",
-            date_of_birth : "1998-13-05",
-            note : "Some note",
-            brandLogo: '/images/brand/slack-logo.svg'
-        },
-    ];
-  return (
-    <Container fluid className="p-6">
+    return (
+        <Container fluid className="p-6">
 
-      {/* content */}
-      <div className="py-6">
-        <Row className='justify-content-start'>
-          <ServerSideTable xl={12} options={options} title={"Queue"}  data={list}/>
-        </Row>
-      </div>
+        {/* content */}
+        <div className="py-6">
+            <Row className='justify-content-start'>
+            <ServerSideTable xl={12} options={options} title={"One time queue"}  
+                data={list} 
+                currentPage={currentPage}
+                lastPage={lastPage}
+                handlePageChange={handlePageChange}
+            />
+            </Row>
 
-    </Container>
-  )
+        </div>
+
+        </Container>
+    )
 }
 
 export default SmsQueue

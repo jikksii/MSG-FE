@@ -1,6 +1,7 @@
 import useHttp from "hooks/useHttp";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import Select from "react-select";
 import Creatable from 'react-select/creatable';
 
@@ -12,12 +13,18 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
     const exceptionNumbersRef = useRef();
 
 
+    const router = useRouter();
+
+    // Call this function when you want to refresh the data
+    const refreshData = () => router.reload();
 
 
 
+    const routineDate = useRef();
     const routineStartDate = useRef();
     const routineEndDate = useRef();
     const routineTime = useRef();
+    const routineNameRef = useRef();
 
     const mondayRef = useRef();
     const tuesdayRef = useRef();
@@ -34,30 +41,21 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
 
 
 
-    const [asRoutine,setAsRoutine] = useState(false);
     const [selectedPeriodity,setSelectedPeriodity] = useState({
         value : 1,
         label : "One time"
     })
-    const periodities = [
-        {
-            value : 1,
-            label : "One time"
-        },
-        {
-            value : 2,
-            label : "Daily"
-        },
-        {
-            value : 3,
-            label : "Weekly"
-        },
-        {
-            value : 4,
-            label : "Monthly"
-        }
-    ];
 
+
+    const [showModal,setShowModal] = useState(false);
+
+    const [routineTypes,setRoutineTypes]  = useState([]);
+
+    const {isLoading : f, sendRequest : fetchRoutineTypes} = useHttp((data) => {
+        setRoutineTypes(data)
+    },
+        () => {}
+    )
 
     const [text,setText] = useState("");
 
@@ -79,78 +77,87 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
             method: 'GET',
             url: "/addressBook/lists"
         })
+        fetchRoutineTypes({
+            method : 'GET',
+            url: '/routines/types'
+        })
     },[])
 
 
+
+    const [errors,setErrors] = useState({})
     //filtered 
+    const handleCreate = (data) => {
+        refreshData();
+        setShowModal(true)
+    }
+
+    const handleCreateError = (error) =>{
+        console.log(error);
+        if (error.response.status === 422){
+            setErrors(error.response.data.errors)
+        }
+    }
+    const { isLoading: isCreating , sendRequest: createRoutine } = useHttp(handleCreate, handleCreateError)
+
+
 
     const [isFiltered,setIsFilterd] = useState(true)
     const handleSubmit = () => {
         let data = {}
-        if(asRoutine){
-            data.periodity_id =  selectedPeriodity.value;
+        data.routine_type_id =  selectedPeriodity.value;
+        data.name  = routineNameRef.current.value
+        if(selectedPeriodity.value == 1){
+            data.date = routineDate.current.value
+        }else{
             data.start_date =  routineStartDate.current.value
             data.end_date =  routineEndDate.current.value
-            data.time =  routineTime.current.value
-            if(selectedPeriodity.value == 3){
-                data.weekdays = {}
-                data.weekdays.monday = mondayRef.current.checked
-                data.weekdays.tuesday = tuesdayRef.current.checked
-                data.weekdays.wednesday = wednesdayRef.current.checked
-                data.weekdays.thursday = thursdayRef.current.checked
-                data.weekdays.firday = fridayRef.current.checked
-                data.weekdays.saturday = saturdayRef.current.checked
-                data.weekdays.sunday = sundayRef.current.checked
-            }
-            if(selectedPeriodity.value == 4){
-                data.day_of_month = dayOfMonthRef.current.value
-            }
+        }
+        data.next_execution_time =  routineTime.current.value
+        if(selectedPeriodity.value == 3){
+            data.send_on_monday = mondayRef.current.checked
+            data.send_on_tuesday  = tuesdayRef.current.checked
+            data.send_on_wednesday  = wednesdayRef.current.checked
+            data.send_on_thursday  = thursdayRef.current.checked
+            data.send_on_friday = fridayRef.current.checked
+            data.send_on_saturday = saturdayRef.current.checked
+            data.send_on_sunday  = sundayRef.current.checked
+        }
+        if(selectedPeriodity.value == 4){
+            data.day_of_month = dayOfMonthRef.current.value
         }
         let lists = contactBookSelectRef.current.state.selectValue;
 
         data.list_ids = lists.map((e) => e.value);
         let manualPhoneNumbers = manualPhoneNumberCreatableRef.current.state.selectValue;
-        data.phone_numbers = manualPhoneNumbers.map((e) => e.value);
+        data.includePhoneNumbers = manualPhoneNumbers.map((e) => e.value);
 
         let exceptionPhoneNumbers = exceptionNumbersRef.current.state.selectValue;
-        data.exception_phone_numbers = exceptionPhoneNumbers.map((e) => e.value);
+        data.excludePhoneNumbers = exceptionPhoneNumbers.map((e) => e.value);
 
         data.is_filtered = isFiltered;
-        data.text = text
+        data.message = text
 
-        console.log(data);
+        createRoutine({
+            method : 'POST',
+            url:"/routines",
+            data : data
+        });
     }
 
     return (
         <Form>
             {
-                !isRoutine && 
-                <Row className="mb-3">
-                    <Col xl={6} lg={6} md={6} xs={12}>
-                        <Form.Check
-                            type="switch"
-                            label="Save as Routine"
-                            name="isRoutine"
-                            value={asRoutine}
-                            onChange={() => setAsRoutine(prevValue => !prevValue)}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {/* <ul>
-                            {errors?.phone_number?.map((error,index) => {
-                                return <li key={index}>{error}</li>
-                            })}
-                            </ul> */}
-                        </Form.Control.Feedback>
-                    </Col>
-                </Row>
-            }
-            {
-                !isRoutine && asRoutine && 
                 <div className="border-bottom pb-10">
                     <Row className="mb-3 ">
                         <Col xl={3} lg={6} md={6} xs={12}>
-                            <Form.Label>Periody</Form.Label>
-                            <Select options={periodities } value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodical"/>
+                            <Form.Label>Periodicity</Form.Label>
+                            <Select options={routineTypes.map((e) => {
+                                return {
+                                    value : e.id,
+                                    label : e.name
+                                }
+                            }) } value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodicity"/>
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
                                 {errors?.phone_number?.map((error,index) => {
@@ -159,50 +166,69 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 </ul> */}
                             </Form.Control.Feedback>
                         </Col>
-                        <Col xl={3} lg={6} md={6} xs={12}>
+                        {selectedPeriodity?.value === 1 && <Col xl={3} lg={6} md={6} xs={12}>
+                            <Form.Label>Date</Form.Label>
+
+                            <Form.Control
+                                isInvalid={errors?.date}
+                                type="date"
+                                ref={routineDate}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                <ul>
+                                {errors?.date?.map((error,index) => {
+                                    return <li key={index}>{error}</li>
+                                })}
+                                </ul>
+                            </Form.Control.Feedback>
+                        </Col>}
+                        {selectedPeriodity?.value !== 1 && <Col xl={3} lg={6} md={6} xs={12}>
                             <Form.Label>Start date</Form.Label>
 
                             <Form.Control
                                 type="date"
+                                isInvalid={errors?.start_date}
                                 ref={routineStartDate}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {/* <ul>
-                                {errors?.phone_number?.map((error,index) => {
+                                <ul>
+                                {errors?.start_date?.map((error,index) => {
                                     return <li key={index}>{error}</li>
                                 })}
-                                </ul> */}
+                                </ul>
                             </Form.Control.Feedback>
-                        </Col>
-                        <Col xl={3} lg={6} md={6} xs={12}>
+                        </Col>}
+                        {selectedPeriodity?.value !== 1 && <Col xl={3} lg={6} md={6} xs={12}>
                             <Form.Label>End date</Form.Label>
 
                             <Form.Control
+                                isInvalid={errors?.end_date}
                                 type="date"
                                 ref={routineEndDate}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {/* <ul>
-                                {errors?.phone_number?.map((error,index) => {
+                                <ul>
+                                {errors?.end_date?.map((error,index) => {
                                     return <li key={index}>{error}</li>
                                 })}
-                                </ul> */}
+                                </ul>
                             </Form.Control.Feedback>
-                        </Col>
-                        {selectedPeriodity?.value !== 1 &&  <Col xl={3} lg={6} md={6} xs={12}>
+                        </Col>}
+                        <Col xl={3} lg={6} md={6} xs={12}>
                             <Form.Label>Time</Form.Label>
                             <Form.Control
+                                isInvalid={errors?.next_execution_time}
                                 type="time"
                                 ref={routineTime}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {/* <ul>
-                                {errors?.phone_number?.map((error,index) => {
+                                <ul>
+                                {errors?.next_execution_time?.map((error,index) => {
                                     return <li key={index}>{error}</li>
                                 })}
-                                </ul> */}
+                                </ul>
                             </Form.Control.Feedback>
-                        </Col>}
+                        </Col>
                     </Row>
                     {selectedPeriodity?.value === 3 && <Row>
                         <Col xl={1} lg={6} md={6} xs={12}>
@@ -313,7 +339,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                     </Row>}
 
                     {selectedPeriodity?.value === 4 && <Row>
-                        <Col xl={1} lg={6} md={6} xs={12}>
+                        <Col xl={3} lg={6} md={6} xs={12}>
                             <Form.Label>Day of Month</Form.Label>
 
                             <Form.Control
@@ -321,77 +347,95 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 min={1}
                                 max={31}
                                 step={1}
-                                onkeydown="return false"
+                                onKeyDown={() => {return false}}
                                 ref={dayOfMonthRef}
+                                isInvalid={errors?.day_of_month}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {/* <ul>
-                                {errors?.phone_number?.map((error,index) => {
+                                <ul>
+                                {errors?.day_of_month?.map((error,index) => {
                                     return <li key={index}>{error}</li>
                                 })}
-                                </ul> */}
+                                </ul>
                             </Form.Control.Feedback>
                         </Col>
                     </Row>}
                 </div>
             }
-            
-            <Row className="mb-3">
+            <Row className="mb-3 my-10">
                 <Col xl={6} lg={6} md={6} xs={12}>
-                    <Form.Label>Sender</Form.Label>
-                    <Select ref={companyRef} placeholder="Select company"/>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                        isInvalid={errors?.description}
+                        ref={routineNameRef}
+                    />
                     <Form.Control.Feedback type="invalid">
-                        {/* <ul>
-                        {errors?.phone_number?.map((error,index) => {
+                        <ul>
+                        {errors?.description?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
-                        </ul> */}
+                        </ul>
                     </Form.Control.Feedback>
                 </Col>
             </Row>
+            
             <Row className="mb-3 my-10">
                 <h3>Phone numbers</h3>
                 <Col xl={6} lg={6} md={6} xs={12}>
-                    <Form.Label>Contact book list</Form.Label>
+                    <Form.Label>Phone numbers of address book lists</Form.Label>
                     <Select options={addressBookLists.map((element) => {
                         return {
                             value: element.id,
                             label: element.name
                         }
-                    })} 
+                    })}
+                    
                         ref={contactBookSelectRef} placeholder="Select contact book lists" isMulti={true} />
+
+                    <Form.Control
+                        hidden={true}
+                        isInvalid={errors?.list_ids}
+                    /> 
                     <Form.Control.Feedback type="invalid">
-                        {/* <ul>
-                        {errors?.phone_number?.map((error,index) => {
+                        <ul>
+                        {errors?.list_ids?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
-                        </ul> */}
+                        </ul>
                     </Form.Control.Feedback>
                 </Col>
                 <Col xl={6} lg={6} md={6} xs={12}>
-                    <Form.Label>Manual Select</Form.Label>
+                    <Form.Label>Include phone numbers</Form.Label>
                     <Creatable ref={manualPhoneNumberCreatableRef} placeholder="Enter phone number"  isMulti={true} />
+                    <Form.Control
+                        hidden={true}
+                        isInvalid={errors?.includePhoneNumbers}
+                    /> 
                     <Form.Control.Feedback type="invalid">
-                        {/* <ul>
-                        {errors?.phone_number?.map((error,index) => {
+                        <ul>
+                        {errors?.includePhoneNumbers?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
-                        </ul> */}
+                        </ul>
                     </Form.Control.Feedback>
                 </Col>
             </Row>
 
             <Row className="mb-3 my-10">
-                <h3>Exceptions</h3>
+                <h3>Exclude</h3>
                 <Col xl={6} lg={6} md={6} xs={12}>
-                    <Form.Label>Manual Select</Form.Label>
+                    <Form.Label>Ignore phone numbers</Form.Label>
                     <Creatable ref={exceptionNumbersRef} placeholder="Enter phone number"  isMulti={true} />
+                    <Form.Control
+                        hidden={true}
+                        isInvalid={errors?.includePhoneNumbers}
+                    /> 
                     <Form.Control.Feedback type="invalid">
-                        {/* <ul>
-                        {errors?.phone_number?.map((error,index) => {
+                        <ul>
+                        {errors?.includePhoneNumbers?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
-                        </ul> */}
+                        </ul>
                     </Form.Control.Feedback>
                 </Col>
             </Row>
@@ -449,8 +493,22 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 </Col>
             </Row>
             <Row>
-                <Button onClick={handleSubmit}>Send</Button>
+                <Button onClick={handleSubmit}>Create</Button>
             </Row>
+            <Modal
+                show={showModal}
+                onHide={() => {
+                    setShowModal(false)
+                }}
+				aria-labelledby="contained-modal-title-vcenter"
+				centered
+			>
+				<Modal.Header closeButton>
+					<Modal.Title id="contained-modal-title-vcenter">
+						Created successfully
+					</Modal.Title>
+				</Modal.Header>
+			</Modal>
         </Form>
     )
 }

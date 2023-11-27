@@ -27,7 +27,7 @@ const SmsQueue = () => {
     const [list,setList] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
     const [lastPage,setLastPage] = useState(1);
-    const { isLoading: isFetchingLists , sendRequest: fetchOneTimeRoutines } = useHttp(
+    const { isLoading: isFetchingLists , sendRequest: fetchBatchMessages } = useHttp(
         (data) => {
             setList(data.data.data);
             setCurrentPage(data.data.current_page)
@@ -41,14 +41,14 @@ const SmsQueue = () => {
     const handlePageChange = (page) => {
         fetchContacts({
             method: 'GET',
-            url: `/routines/oneTime?page=${page}`
+            url: `/batchMessages?page=${page}`
         })
     }
 
     useEffect(() => {
-        fetchOneTimeRoutines(
+        fetchBatchMessages(
             {
-                url:'routines/oneTime',
+                url:'batchMessages',
                 method:'GET'
             }
         )
@@ -67,25 +67,42 @@ const SmsQueue = () => {
                 }
             },
             {
-                name : "start_date",
-                label :"Send date",
-                defaultRender: true
-            },
-            {
-                name : "next_execution_time",
-                label :"Time",
-                defaultRender: true
-            },
-            {
                 name : "description",
                 label :"Description",
                 defaultRender: true
             },
             {
-                name : "message",
-                label :"Message",
+                name : "created_at",
+                label :"Date",
                 defaultRender: true
-            }
+            },
+            {
+                name : "next_execution_time",
+                label :"Execution time",
+                defaultRender: true
+            },
+            {
+                name : "total_messages",
+                label :"Total",
+                defaultRender: true
+            },
+            {
+
+                name : "successful_messages",
+                label :"Successful Message",
+                defaultRender: true
+            },
+            {
+                name : "failed_messages",
+                label :"Failed Messages",
+                defaultRender: true
+            },
+            {
+                name : "pending_messages",
+                label :"Pending Message",
+                defaultRender: true
+            },
+            
         ],
         insertable : false,
         onInsertButtonClick : function(){
@@ -116,7 +133,7 @@ const SmsQueue = () => {
         {/* content */}
         <div className="py-6">
             <Row className='justify-content-start'>
-            <ServerSideTable xl={12} options={options} title={"One time queue"}  
+            <ServerSideTable xl={12} options={options} title={"Batch Messages"}  
                 data={list} 
                 currentPage={currentPage}
                 lastPage={lastPage}

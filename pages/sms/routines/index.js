@@ -18,7 +18,7 @@ import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
-import { MoreHorizontal, MoreVertical } from 'react-feather';
+import { Bold, MoreHorizontal, MoreVertical } from 'react-feather';
 import useHttp from 'hooks/useHttp';
 
 const SmsQueue = () => {
@@ -41,14 +41,14 @@ const SmsQueue = () => {
     const handlePageChange = (page) => {
         fetchContacts({
             method: 'GET',
-            url: `/routines/oneTime?page=${page}`
+            url: `/routines/routines?page=${page}`
         })
     }
 
     useEffect(() => {
         fetchOneTimeRoutines(
             {
-                url:'routines/oneTime',
+                url:'routines/routines',
                 method:'GET'
             }
         )
@@ -67,14 +67,40 @@ const SmsQueue = () => {
                 }
             },
             {
-                name : "start_date",
-                label :"Send date",
-                defaultRender: true
-            },
-            {
-                name : "next_execution_time",
-                label :"Time",
-                defaultRender: true
+                name:"",
+                label:"Range",
+                defaultRender: false,
+                overrideRenderHandler: function(item){
+                    return (
+                        <Row className='justify-content-start'>
+                            <Col xl={12}>
+                                <span style={{fontWeight:'bold'}}>From</span><span>{` ${item.start_date} `}</span><span style={{fontWeight:'bold'}}>To</span><span>{` ${item.end_date} `}</span>
+                            </Col>
+                            <Col xl={12}>
+                                <span style={{fontWeight:'bold'}}>At</span><span>{` ${item.next_execution_time} `}</span>
+                                {item.type.id ===4 && 
+                                <Col xl={12}>
+                                    <span style={{fontWeight:'bold'}}>On </span><span>{` ${item.day_of_month}`}</span><span>th Day of Month</span>
+                                </Col>}
+                            </Col>
+                            {
+                                item.type.id ===3 && 
+                                <Col xl={12}>
+                                    <span style={{fontWeight:'bold'}}>Every:</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_monday  ? 'Monday': ''} `}</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_tuesday  ? 'Tuesday': ''} `}</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_wednesday  ? 'Wednesday': ''} `}</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_thursday  ? 'Thursday': ''} `}</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_friday  ? 'Friday': ''} `}</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_saturday  ? 'Saturday': ''} `}</span>
+                                    <span style={{fontStyle:'italic'}}>{` ${item.send_on_sunday  ? 'Sunday': ''} `}</span>
+                                </Col>
+                            }
+                            
+                        </Row>
+                    )
+
+                }
             },
             {
                 name : "description",
@@ -91,23 +117,6 @@ const SmsQueue = () => {
         onInsertButtonClick : function(){
             console.log("onInsertButtonClick")
         },
-        hasActions : false,
-        actions : function(item){
-            return (
-                <Dropdown.Menu align={'end'}>
-                    <Dropdown.Item eventKey="1">
-                        Edit {item.id}
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="2">
-                        Delete
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="2">
-                        Details
-                    </Dropdown.Item>
-                </Dropdown.Menu>
-            )
-        }
-
     }
 
     return (
@@ -116,7 +125,7 @@ const SmsQueue = () => {
         {/* content */}
         <div className="py-6">
             <Row className='justify-content-start'>
-            <ServerSideTable xl={12} options={options} title={"One time queue"}  
+            <ServerSideTable xl={12} options={options} title={"Routines"}  
                 data={list} 
                 currentPage={currentPage}
                 lastPage={lastPage}

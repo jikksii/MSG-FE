@@ -22,7 +22,7 @@ const SignIn = () => {
   const handleSuccessAuth = useCallback(data => {
     setCookie('token', data.data.token);
     router.push('/');
-  }, []);
+  }, [router]);
 
   const handleError = (error) => {
     console.log(error);

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1/api',
+    baseURL: process.env.NEXT_PUBLIC_HOST + '/api',
     timeout: 1000,
 })
 export default axiosInstance;

@@ -52,7 +52,7 @@ const SmsQueue = () => {
                 method:'GET'
             }
         )
-    },[])
+    },[fetchOneTimeRoutines])
 
 
     const options = {

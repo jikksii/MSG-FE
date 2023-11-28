@@ -27,7 +27,7 @@ const SmsQueue = () => {
     const [list,setList] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
     const [lastPage,setLastPage] = useState(1);
-    const { isLoading: isFetchingLists , sendRequest: fetchOneTimeRoutines } = useHttp(
+    const { isLoading: isFetchingLists , sendRequest: fetchRoutines } = useHttp(
         (data) => {
             setList(data.data.data);
             setCurrentPage(data.data.current_page)
@@ -46,13 +46,13 @@ const SmsQueue = () => {
     }
 
     useEffect(() => {
-        fetchOneTimeRoutines(
+        fetchRoutines(
             {
                 url:'routines/routines',
                 method:'GET'
             }
         )
-    },[])
+    },[fetchRoutines])
 
 
     const options = {

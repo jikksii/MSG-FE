@@ -26,13 +26,15 @@ const GeneralSetting = () => {
 
 
   const handleSuccessAuth = useCallback(data => {
-    console.log(data.data);
     setProfile(data.data)
   }, []);
 
-  const handleError = (error) => {
-    console.log(error);
-  }
+  const handleError = (error) => useCallback(
+    (error) => {
+
+    },
+    []
+  )
 
 
   const { sendRequest: fetchProfile } = useHttp(handleSuccessAuth, handleError)

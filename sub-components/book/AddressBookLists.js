@@ -1,5 +1,5 @@
 // import node module libraries
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from 'next/link';
 import { Col, Card, Dropdown, Image, Modal, Button, Form, Row } from 'react-bootstrap';
 import { MoreVertical, PlusCircle } from 'react-feather';
@@ -12,13 +12,16 @@ import useHttp from "hooks/useHttp";
 const AddressBookLists = ({onListSelect,onListAddClicked}) => {
 
 
-    const handleSuccessListFetch = (data) => {
+
+    const handleError = useCallback(() => {
+
+    },[]);
+
+    const handleSuccessListFetch = useCallback(
+        (data) =>{
         setAddressBookLists(data.data);
-    }
-
-    const handleError = () =>{
-
-    }
+    },
+    []);
     const { isLoading: isFetchingLists , sendRequest: fetchLists } = useHttp(handleSuccessListFetch, handleError)
     
 
@@ -27,7 +30,7 @@ const AddressBookLists = ({onListSelect,onListAddClicked}) => {
             method: 'GET',
             url: "/addressBook/lists"
         })
-    },[])
+    },[fetchLists])
 
 
     const ActionMenu = ({list}) => {

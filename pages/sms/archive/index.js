@@ -16,7 +16,7 @@ import {
 import AddressBookLists from 'sub-components/book/AddressBookLists';
 import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
 import { MoreHorizontal, MoreVertical } from 'react-feather';
 import useHttp from 'hooks/useHttp';
@@ -27,15 +27,26 @@ const SmsQueue = () => {
     const [list,setList] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
     const [lastPage,setLastPage] = useState(1);
-    const { isLoading: isFetchingLists , sendRequest: fetchBatchMessages } = useHttp(
+
+
+
+    const handleBatchMessagesFetch = useCallback(
         (data) => {
             setList(data.data.data);
             setCurrentPage(data.data.current_page)
             setLastPage(data.data.last_page)
-        }, 
-        (error) =>{
+        },
+        []
+    )
 
-        }
+    const handleBatchMessageFetchError = useCallback(
+        (error) => {
+        },
+        []
+    )
+    const { isLoading: isFetchingLists , sendRequest: fetchBatchMessages } = useHttp(
+        handleBatchMessagesFetch, 
+        handleBatchMessageFetchError
     )
 
     const handlePageChange = (page) => {

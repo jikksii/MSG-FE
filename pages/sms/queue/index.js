@@ -16,44 +16,31 @@ import {
 import AddressBookLists from 'sub-components/book/AddressBookLists';
 import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
 import { MoreHorizontal, MoreVertical } from 'react-feather';
 import useHttp from 'hooks/useHttp';
+
+import useSWR from 'swr'
+import fetcher from 'utils/fetcher';
+import axiosInstance from 'utils/axiosInstance';
 
 const SmsQueue = () => {
 
 
     const [list,setList] = useState([]);
-    const [currentPage,setCurrentPage] = useState(1);
-    const [lastPage,setLastPage] = useState(1);
-    const { isLoading: isFetchingLists , sendRequest: fetchOneTimeRoutines } = useHttp(
-        (data) => {
-            setList(data.data.data);
-            setCurrentPage(data.data.current_page)
-            setLastPage(data.data.last_page)
-        }, 
-        (error) =>{
+    const [page,setCurrentPage] = useState(1);
 
-        }
-    )
 
-    const handlePageChange = (page) => {
-        fetchContacts({
-            method: 'GET',
-            url: `/routines/oneTime?page=${page}`
-        })
+    let data = null;
+    const { data : response, error, isLoading } = useSWR(`/routines/oneTime?page=${page}`, axiosInstance)
+
+    if(!isLoading){
+        data = response.data
     }
-
-    useEffect(() => {
-        fetchOneTimeRoutines(
-            {
-                url:'routines/oneTime',
-                method:'GET'
-            }
-        )
-    },[fetchOneTimeRoutines])
-
+    const handlePageChange = (page) => {
+       setCurrentPage(page)
+    }
 
     const options = {
         searchable : false,
@@ -116,12 +103,17 @@ const SmsQueue = () => {
         {/* content */}
         <div className="py-6">
             <Row className='justify-content-start'>
-            <ServerSideTable xl={12} options={options} title={"One time queue"}  
-                data={list} 
-                currentPage={currentPage}
-                lastPage={lastPage}
-                handlePageChange={handlePageChange}
-            />
+
+            {!isLoading && data && 
+            
+                <ServerSideTable xl={12} options={options} title={"One time queue"}  
+                    data={data.data.data} 
+                    currentPage={data.data.current_page}
+                    lastPage={data.data.last_page}
+                    handlePageChange={handlePageChange}
+                />
+            }
+            
             </Row>
 
         </div>

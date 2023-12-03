@@ -34,6 +34,7 @@
     "sass-loader": "^13.2.2",
     "simplebar": "^6.2.4",
     "simplebar-react": "^3.2.3",
+    "swr": "^2.2.4",
     "uuid": "^9.0.0"
   }
 }

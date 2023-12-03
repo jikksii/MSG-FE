@@ -37,7 +37,7 @@ const Toasts = () => {
 
 	const [position, setPosition] = useState('top-start');
 
-	const iconSVG = `<svg class="bd-placeholder-img rounded me-2" width="20" height="20"
+	const iconSVG = `<svg className="bd-placeholder-img rounded me-2" width="20" height="20"
 	xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false"
 	role="img">
 	<rect width="100%" height="100%" fill="var(--bs-primary)"></rect>

@@ -41,7 +41,7 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs,current
             let value = currentPage + i;
             if(!(value < 1 || value > lastPage)){
                 list.push(
-                    <Pagination.Item  onClick={() => handlePageChange(value)} active={value == currentPage}>{value}</Pagination.Item> 
+                    <Pagination.Item key={`pagination-${index}`}  onClick={() => handlePageChange(value)} active={value == currentPage}>{value}</Pagination.Item> 
                 )
             }
         });

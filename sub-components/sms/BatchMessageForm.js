@@ -1,6 +1,6 @@
 import useHttp from "hooks/useHttp";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import Select from "react-select";
 import Creatable from 'react-select/creatable';
@@ -51,24 +51,35 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
 
     const [routineTypes,setRoutineTypes]  = useState([]);
 
-    const {isLoading : f, sendRequest : fetchRoutineTypes} = useHttp((data) => {
-        setRoutineTypes(data)
-    },
-        () => {}
+
+    const handleFetchRoutineTypes  = useCallback(
+        (data) => {
+            setRoutineTypes(data)
+        },
+        []
     )
+
+    const handleFetchRoutineTypesError = useCallback(
+        () => {},[]
+    )
+    const {isLoading : f, sendRequest : fetchRoutineTypes} = useHttp(handleFetchRoutineTypes,handleFetchRoutineTypesError)
 
     const [text,setText] = useState("");
 
     // fetch contact lists.
 
     const [addressBookLists,setAddressBookLists] = useState([])
-    const handleSuccessListFetch = (data) => {
-        setAddressBookLists(data.data);
-    }
+    const handleSuccessListFetch = useCallback(
+        (data) => {
+            setAddressBookLists(data.data);
+        },
+        []
+    )
 
-    const handleError = () =>{
-
-    }
+    const handleError =  useCallback(
+        () => {},
+        []
+    )
     const { isLoading: isFetchingLists , sendRequest: fetchLists } = useHttp(handleSuccessListFetch, handleError)
     
 

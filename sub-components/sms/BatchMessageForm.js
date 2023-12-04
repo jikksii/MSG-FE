@@ -452,7 +452,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
             </Row>
             <Row className="mb-3 my-10">
                 <h3>Sending type</h3>
-                <Col xl={1} lg={6} md={6} xs={12}>
+                <Col xl={3} lg={6} md={6} xs={12}>
                     <Form.Check
                         type="radio"
                         label="With Filter"
@@ -468,7 +468,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                         </ul> */}
                     </Form.Control.Feedback>
                 </Col>
-                <Col xl={2} lg={6} md={6} xs={12}>
+                <Col xl={3} lg={6} md={6} xs={12}>
                     <Form.Check
                         type="radio"
                         label="Without Filter"
@@ -486,12 +486,12 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 </Col>
             </Row>
             <Row className="mb-3">
-                <h3>TEXT</h3>
-                <Col xl={12} lg={12} md={12} xs={12}>
+                <h3>Message</h3>
+                {/* <Col xl={12} lg={12} md={12} xs={12}>
                     <Button className="me-1 mb-1" variant="outline-white">First name</Button>
                     <Button className="me-1 mb-1" variant="outline-white">Last name</Button>
                     <Button className="me-1 mb-1" variant="outline-white">Birthday</Button>
-                </Col>
+                </Col> */}
                 <Col xl={12} lg={12} md={12} xs={12}>
                     <Form.Control value={text} onChange={(e) => setText(e.target.value)} as="textarea" rows={12} />
                     <Form.Control.Feedback type="invalid">

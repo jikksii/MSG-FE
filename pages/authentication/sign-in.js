@@ -62,7 +62,7 @@ const SignIn = () => {
           {/* Card body */}
           <Card.Body className="p-6">
             <div className="mb-4">
-              <Link href="/"><Image src="/images/brand/logo/logo-primary.svg" className="mb-2" alt="" /></Link>
+              <h2 className='text-center'>SMS Portal</h2>
               {errorMessage && <Alert key="danger" variant="danger">{errorMessage}</Alert>}
             </div>
             {/* Form */}
@@ -87,7 +87,7 @@ const SignIn = () => {
               <div>
                 {/* Button */}
                 <div className="d-grid">
-                  <Button onClick={loginHandler} variant="primary" type="button">Sign In</Button>
+                  <Button onClick={loginHandler} variant="secondary" type="button">Sign In</Button>
                 </div>
                 {/* <div className="d-md-flex justify-content-between mt-4">
                   <div className="mb-2 mb-md-0">

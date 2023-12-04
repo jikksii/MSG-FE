@@ -52,14 +52,14 @@ const SmsQueue = () => {
     const handlePageChange = (page) => {
         fetchContacts({
             method: 'GET',
-            url: `/batchMessages?page=${page}`
+            url: `/batch/messages?page=${page}`
         })
     }
 
     useEffect(() => {
         fetchBatchMessages(
             {
-                url:'batchMessages',
+                url:`/batch/messages?page=${currentPage}`,
                 method:'GET'
             }
         )
@@ -70,12 +70,9 @@ const SmsQueue = () => {
         searchable : false,
         columns : [
             {
-                name:"type",
-                label:"Periodicity",
-                defaultRender: false,
-                overrideRenderHandler: function(item){
-                    return <div>{item.type.name}</div>
-                }
+                name : "periodicity",
+                label :"Periodicity",
+                defaultRender: true
             },
             {
                 name : "description",
@@ -88,29 +85,29 @@ const SmsQueue = () => {
                 defaultRender: true
             },
             {
-                name : "next_execution_time",
-                label :"Execution time",
-                defaultRender: true
-            },
-            {
-                name : "total_messages",
+                name : "total",
                 label :"Total",
                 defaultRender: true
             },
             {
 
-                name : "successful_messages",
-                label :"Successful Message",
+                name : "delivered",
+                label :"Delivered",
                 defaultRender: true
             },
             {
-                name : "failed_messages",
-                label :"Failed Messages",
+                name : "failed",
+                label :"Failed",
                 defaultRender: true
             },
             {
-                name : "pending_messages",
-                label :"Pending Message",
+                name : "pending",
+                label :"Pending",
+                defaultRender: true
+            },
+            {
+                name : "message",
+                label :"Message",
                 defaultRender: true
             },
             
@@ -138,6 +135,7 @@ const SmsQueue = () => {
 
     }
 
+    console.log(list);
     return (
         <Container fluid className="p-6">
 

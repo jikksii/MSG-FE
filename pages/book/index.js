@@ -28,7 +28,7 @@ const Contacts = () => {
 
 
     const options = {
-        searchable : true,
+        searchable : false,
         onSearchHandler : function(searchQuery){
             console.log("onSearchHandler")
         },

@@ -103,7 +103,7 @@ const GeneralSetting = () => {
 
                 {
                   
-                  profile.company &&
+                  profile.contact &&
                   
                   <div>
                     <div className="mb-6">

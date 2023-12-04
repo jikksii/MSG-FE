@@ -504,7 +504,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 </Col>
             </Row>
             <Row>
-                <Button onClick={handleSubmit}>Create</Button>
+                <Button variant="secondary" onClick={handleSubmit}>Create</Button>
             </Row>
             <Modal
                 show={showModal}

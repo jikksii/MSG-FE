@@ -16,7 +16,7 @@ import {
 import AddressBookLists from 'sub-components/book/AddressBookLists';
 import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-bootstrap-icons';
 import { MoreHorizontal, MoreVertical } from 'react-feather';
 import useHttp from 'hooks/useHttp';
@@ -276,6 +276,41 @@ const Contacts = () => {
         }
     }
 
+
+
+    const handleDownloadSuccess = useCallback(
+        (data) => {
+            const downloadUrl = window.URL.createObjectURL(new Blob([data]));
+
+            const link = document.createElement('a');
+
+            link.href = downloadUrl;
+
+            link.setAttribute('download','example.xlsx'); //any other extension
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            link.remove();
+        },[]
+    )
+
+    const handleDownloadError = useCallback(
+        (error) => {},[]
+    )
+
+    const { isLoading: isDownloading , sendRequest: downloadExample } = useHttp(handleDownloadSuccess, handleDownloadError)
+    const handleDownloadExample = (e) => {
+        e.preventDefault();
+
+        downloadExample({
+            method: 'GET',
+            url: `/addressBook/lists/import/example`,
+            responseType : 'blob'
+        })
+
+    }
   return (
     <Container fluid className="p-6">
 
@@ -460,7 +495,7 @@ const Contacts = () => {
                                     <Form.Control 
                                         isInvalid={importErrors}
                                         type="file"
-                                        accept=".xlsx , .xls"
+                                        accept=".xlsx , .xls, .csv"
                                         onChange={(event) => {
                                             setImportFile(event.target.files[0])
                                         }}
@@ -472,6 +507,11 @@ const Contacts = () => {
                                         })}
                                         </ul>
                                     </Form.Control.Feedback>
+                                </Col>
+                            </Row>
+                            <Row className='d-flex justify-content-end'>
+                                <Col md={5} xs={12}>
+                                    <a href='#' onClick={handleDownloadExample}>Download Example File</a>
                                 </Col>
                             </Row>
                         </Form>

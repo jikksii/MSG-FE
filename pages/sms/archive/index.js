@@ -1,5 +1,5 @@
 // import node module libraries
-import { Col, Row, Container, Dropdown } from 'react-bootstrap';
+import { Col, Row, Container, Dropdown, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 // import widget as custom components
 import { PageHeading } from 'widgets'
@@ -106,10 +106,23 @@ const SmsQueue = () => {
                 defaultRender: true
             },
             {
-                name : "message",
-                label :"Message",
-                defaultRender: true
-            },
+                name: "message",
+                label: "Message",
+                defaultRender: false,
+                overrideRenderHandler: function (item) {
+                    const tooltip = (
+                        <Tooltip id="tooltip">
+                            {item.message}
+                        </Tooltip>
+                    );
+                    
+                    return (
+                        <OverlayTrigger placement="bottom" overlay={tooltip}>
+                            <div className='d-inline-block text-truncate' style={{ maxWidth: "150px" }}>{item.message}</div>
+                        </OverlayTrigger>
+                    )
+                }
+            }
             
         ],
         insertable : false,

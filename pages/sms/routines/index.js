@@ -114,7 +114,20 @@ const SmsQueue = () => {
             {
                 name : "description",
                 label :"Description",
-                defaultRender: true
+                defaultRender: false,
+                overrideRenderHandler: function (item) {
+                    const tooltip = (
+                        <Tooltip id="tooltip">
+                            {item.description}
+                        </Tooltip>
+                    );
+                    
+                    return (
+                        <OverlayTrigger placement="bottom" overlay={tooltip}>
+                            <div className='d-inline-block text-truncate' style={{ maxWidth: "150px" }}>{item.description}</div>
+                        </OverlayTrigger>
+                    )
+                }
             },
             {
                 name: "message",

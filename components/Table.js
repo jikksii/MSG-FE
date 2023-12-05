@@ -70,7 +70,7 @@ const ServerSideTable = ({className,options,data, title , xl, lg, md, xs,current
                         }
                         
                     </Card.Title>
-                    <Table responsive={true} className="text-nowrap">
+                    <Table className="text-nowrap">
                         <thead className="table-light">
                             <tr>
                                 {options.columns.map((item, index) => {

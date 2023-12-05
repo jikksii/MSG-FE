@@ -117,7 +117,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
     const handleSubmit = () => {
         let data = {}
         data.routine_type_id =  selectedPeriodity.value;
-        data.name  = routineNameRef.current.value
+        data.description  = routineNameRef.current.value
         if(selectedPeriodity.value == 1){
             data.date = routineDate.current.value
         }else{
@@ -493,13 +493,13 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                     <Button className="me-1 mb-1" variant="outline-white">Birthday</Button>
                 </Col> */}
                 <Col xl={12} lg={12} md={12} xs={12}>
-                    <Form.Control value={text} onChange={(e) => setText(e.target.value)} as="textarea" rows={12} />
+                    <Form.Control  isInvalid={errors?.message} value={text} onChange={(e) => setText(e.target.value)} as="textarea" rows={12} />
                     <Form.Control.Feedback type="invalid">
-                        {/* <ul>
-                        {errors?.phone_number?.map((error,index) => {
+                        <ul>
+                        {errors?.message?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
-                        </ul> */}
+                        </ul>
                     </Form.Control.Feedback>
                 </Col>
             </Row>

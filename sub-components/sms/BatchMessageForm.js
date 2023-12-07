@@ -511,11 +511,11 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                         placeholder="Enter phone number"  isMulti={true} />
                     <Form.Control
                         hidden={true}
-                        isInvalid={errors?.includePhoneNumbers}
+                        isInvalid={errors?.excludePhoneNumbers}
                     /> 
                     <Form.Control.Feedback type="invalid">
                         <ul>
-                        {errors?.includePhoneNumbers?.map((error,index) => {
+                        {errors?.excludePhoneNumbers?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
                         </ul>

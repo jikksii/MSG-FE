@@ -37,7 +37,7 @@ const Message = () => {
             method: 'GET',
             url: `/routines/${id[0]}`
         })
-    }, [router]);
+    }, [router, fetchRoutine]);
     return (
         <Container fluid className="p-6">
             <BatchMessageForm isRoutine={false} routine={routine} />

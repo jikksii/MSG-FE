@@ -63,7 +63,7 @@ const SmsQueue = () => {
                 method:'GET'
             }
         )
-    },[fetchBatchMessages])
+    },[fetchBatchMessages, currentPage])
 
 
     const options = {

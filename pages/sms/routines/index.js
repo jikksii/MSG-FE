@@ -17,9 +17,10 @@ import AddressBookLists from 'sub-components/book/AddressBookLists';
 import AddressBookContacts from 'sub-components/book/AddressBookContacts';
 import ServerSideTable from 'components/Table';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-bootstrap-icons';
 import { Bold, MoreHorizontal, MoreVertical } from 'react-feather';
 import useHttp from 'hooks/useHttp';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const SmsQueue = () => {
 
@@ -27,6 +28,7 @@ const SmsQueue = () => {
     const [list,setList] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
     const [lastPage,setLastPage] = useState(1);
+    const router = useRouter();
 
     const handleFetchRoutines = useCallback(
         (data) => {
@@ -152,6 +154,22 @@ const SmsQueue = () => {
         onInsertButtonClick : function(){
             console.log("onInsertButtonClick")
         },
+        hasActions: true,
+        actions: function (item) {
+            const handleEdit = () => {
+                router.push(`/sms/message/${item.id}`)
+            }
+            return (
+                <Dropdown.Menu align={'end'}>
+                    <Dropdown.Item onClick={handleEdit} eventKey="1">
+                        Edit
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="2">
+                        Delete
+                    </Dropdown.Item>
+                </Dropdown.Menu>
+            )
+        }
     }
 
     return (

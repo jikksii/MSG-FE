@@ -118,7 +118,7 @@ const QuickMenu = ({ handleSignOut }) => {
     const QuickMenuMobile = () => {
         return (
             <ListGroup as="ul" bsPrefix='navbar-nav' className="navbar-right-wrap ms-auto d-flex nav-top-wrap">
-                <Dropdown as="li" className="stopevent">
+                {/* <Dropdown as="li" className="stopevent">
                     <Dropdown.Toggle as="a"
                         bsPrefix=' '
                         id="dropdownNotification"
@@ -147,7 +147,7 @@ const QuickMenu = ({ handleSignOut }) => {
                             </div>
                         </Dropdown.Item>
                     </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown> */}
                 <Dropdown as="li" className="ms-2">
                     <Dropdown.Toggle
                         as="a"
@@ -155,7 +155,7 @@ const QuickMenu = ({ handleSignOut }) => {
                         className="rounded-circle"
                         id="dropdownUser">
                         <div className="avatar avatar-md avatar-indicators avatar-online">
-                            <Image alt="avatar" src='/images/avatar/avatar-1.jpg' className="rounded-circle" />
+                            <Image alt="avatar" src='/images/avatar/avatar.jpeg' className="rounded-circle" />
                         </div>
                     </Dropdown.Toggle>
                     <Dropdown.Menu

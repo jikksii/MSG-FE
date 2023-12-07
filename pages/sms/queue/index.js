@@ -24,18 +24,21 @@ import useHttp from 'hooks/useHttp';
 import useSWR from 'swr'
 import fetcher from 'utils/fetcher';
 import axiosInstance from 'utils/axiosInstance';
+import { useRouter } from 'next/router';
 
 const SmsQueue = () => {
 
 
     const [list, setList] = useState([]);
     const [page, setCurrentPage] = useState(1);
+    const router = useRouter();
+
 
 
     let data = null;
     const { data: response, error, isLoading } = useSWR(`/routines/oneTime?page=${page}`, axiosInstance)
 
-    if (!isLoading) {
+    if (!isLoading && !error) {
         data = response.data
     }
     const handlePageChange = (page) => {
@@ -104,18 +107,18 @@ const SmsQueue = () => {
         onInsertButtonClick: function () {
             console.log("onInsertButtonClick")
         },
-        hasActions: false,
+        hasActions: true,
         actions: function (item) {
+            const handleEdit = () => {
+                router.push(`/sms/message/${item.id}`)
+            }
             return (
                 <Dropdown.Menu align={'end'}>
-                    <Dropdown.Item eventKey="1">
-                        Edit {item.id}
+                    <Dropdown.Item onClick={handleEdit} eventKey="1">
+                        Edit
                     </Dropdown.Item>
                     <Dropdown.Item eventKey="2">
                         Delete
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="2">
-                        Details
                     </Dropdown.Item>
                 </Dropdown.Menu>
             )

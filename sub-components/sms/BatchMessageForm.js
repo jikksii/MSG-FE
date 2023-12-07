@@ -7,6 +7,7 @@ import Creatable from 'react-select/creatable';
 
 
 const BatchMessageForm = ({isRoutine = false,routine = null}) => {
+
     const companyRef = useRef();
     const contactBookSelectRef = useRef();
     const manualPhoneNumberCreatableRef = useRef();
@@ -40,11 +41,39 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
 
 
 
+    useEffect(()=> {
+        if(routine){
+            console.log(routine);
+            setSelectedPeriodity({
+                value : routine.type.id,
+                label : routine.type.name
+            })
 
-    const [selectedPeriodity,setSelectedPeriodity] = useState({
-        value : 1,
-        label : "One time"
-    })
+            let lists = routine.lists.map((element) => {
+                return {
+                    value : element.id,
+                    label : element.name
+                }
+            })
+            setSelectedLists(lists)
+            setSelectedExcludePhoneNumbers(routine.excludePhoneNumbers.map((e) => {
+                return {
+                    value : e.phone_number,
+                    label : e.phone_number
+                }
+            }));
+            setSelectedIncludePhoneNumbers(routine.includePhoneNumbers.map((e) => {
+                return {
+                    value : e.phone_number,
+                    label : e.phone_number
+                }
+            }));
+            setIsFilterd(routine.is_filtered);
+            setText(routine.message)
+        }
+    },[routine])
+
+    const [selectedPeriodity,setSelectedPeriodity] = useState();
 
 
     const [showModal,setShowModal] = useState(false);
@@ -54,7 +83,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
 
     const handleFetchRoutineTypes  = useCallback(
         (data) => {
-            setRoutineTypes(data)
+            setRoutineTypes(data);
         },
         []
     )
@@ -113,6 +142,16 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
 
 
 
+    const handleSave = (data) => {
+        setShowModal(true)
+
+        setTimeout(() => {
+            setShowModal(false)
+        },450)
+    }
+
+    const { isLoading: isUpdating , sendRequest: updateRoutine } = useHttp(handleSave, handleCreateError)
+
     const [isFiltered,setIsFilterd] = useState(true)
     const handleSubmit = () => {
         let data = {}
@@ -149,13 +188,27 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
         data.is_filtered = isFiltered;
         data.message = text
 
-        createRoutine({
-            method : 'POST',
-            url:"/routines",
-            data : data
-        });
+
+        if(routine){
+            updateRoutine({
+                method : 'PUT',
+                url:`/routines/${routine.id}`,
+                data : data
+            })
+        }else{
+            createRoutine({
+                method : 'POST',
+                url:"/routines",
+                data : data
+            });
+        }
     }
 
+
+
+    const [selectedLists,setSelectedLists] = useState([]);
+    const [selectedIncludePhoneNumbers, setSelectedIncludePhoneNumbers] = useState([]);
+    const [selectedExcludePhoneNumbers, setSelectedExcludePhoneNumbers] = useState([]);
     return (
         <Form>
             {
@@ -168,7 +221,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                     value : e.id,
                                     label : e.name
                                 }
-                            }) } value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodicity"/>
+                            }) }  value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodicity"/>
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
                                 {errors?.phone_number?.map((error,index) => {
@@ -184,6 +237,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 isInvalid={errors?.date}
                                 type="date"
                                 ref={routineDate}
+                                defaultValue={routine ? routine.start_date : null}
                             />
                             <Form.Control.Feedback type="invalid">
                                 <ul>
@@ -200,6 +254,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 type="date"
                                 isInvalid={errors?.start_date}
                                 ref={routineStartDate}
+                                defaultValue={routine ? routine.start_date : null}
                             />
                             <Form.Control.Feedback type="invalid">
                                 <ul>
@@ -216,6 +271,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 isInvalid={errors?.end_date}
                                 type="date"
                                 ref={routineEndDate}
+                                defaultValue={routine ? routine.end_date : null}
                             />
                             <Form.Control.Feedback type="invalid">
                                 <ul>
@@ -231,6 +287,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 isInvalid={errors?.next_execution_time}
                                 type="time"
                                 ref={routineTime}
+                                defaultValue={routine ? routine.next_execution_time : null}
                             />
                             <Form.Control.Feedback type="invalid">
                                 <ul>
@@ -248,6 +305,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 label="Monday"
                                 name="monday"
                                 ref={mondayRef}
+                                defaultChecked={routine ? routine.send_on_monday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -263,6 +321,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 label="Tuesday"
                                 name="tuesday"
                                 ref={tuesdayRef}
+                                defaultChecked={routine ? routine.send_on_tuesday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -272,12 +331,13 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 </ul> */}
                             </Form.Control.Feedback>
                         </Col>
-                        <Col xl={1}lg={6} md={6} xs={12}>
+                        <Col xl={2} lg={6} md={6} xs={12}>
                             <Form.Check
                                 type="checkbox"
                                 label="Wednesday"
                                 name="wednesday"
                                 ref={wednesdayRef}
+                                defaultChecked={routine ? routine.send_on_wednesday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -293,6 +353,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 label="Thursday"
                                 name="thursday"
                                 ref={thursdayRef}
+                                defaultChecked={routine ? routine.send_on_thursday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -308,6 +369,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 label="Friday"
                                 name="friday"
                                 ref={fridayRef}
+                                defaultChecked={routine ? routine.send_on_friday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -323,6 +385,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 label="Saturday"
                                 name="saturday"
                                 ref={saturdayRef}
+                                defaultChecked={routine ? routine.send_on_saturday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -338,6 +401,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 label="Sunday"
                                 name="sunday"
                                 ref={sundayRef}
+                                defaultChecked={routine ? routine.send_on_sunday : false}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {/* <ul>
@@ -361,6 +425,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 onKeyDown={() => {return false}}
                                 ref={dayOfMonthRef}
                                 isInvalid={errors?.day_of_month}
+                                defaultValue={routine ? routine.day_of_month : ""}
                             />
                             <Form.Control.Feedback type="invalid">
                                 <ul>
@@ -379,6 +444,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                     <Form.Control
                         isInvalid={errors?.description}
                         ref={routineNameRef}
+                        defaultValue={routine ? routine.description : ""}
                     />
                     <Form.Control.Feedback type="invalid">
                         <ul>
@@ -401,7 +467,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                         }
                     })}
                     
-                        ref={contactBookSelectRef} placeholder="Select contact book lists" isMulti={true} />
+                        ref={contactBookSelectRef} value={selectedLists} onChange={(value) => setSelectedLists(value)} placeholder="Select contact book lists" isMulti={true} />
 
                     <Form.Control
                         hidden={true}
@@ -417,7 +483,9 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 </Col>
                 <Col xl={6} lg={6} md={6} xs={12}>
                     <Form.Label>Include phone numbers</Form.Label>
-                    <Creatable ref={manualPhoneNumberCreatableRef} placeholder="Enter phone number"  isMulti={true} />
+                    <Creatable ref={manualPhoneNumberCreatableRef} 
+                        value={selectedIncludePhoneNumbers} 
+                        onChange={(value) => setSelectedIncludePhoneNumbers(value)} placeholder="Enter phone number"  isMulti={true} />
                     <Form.Control
                         hidden={true}
                         isInvalid={errors?.includePhoneNumbers}
@@ -436,7 +504,11 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 <h3>Exclude</h3>
                 <Col xl={6} lg={6} md={6} xs={12}>
                     <Form.Label>Ignore phone numbers</Form.Label>
-                    <Creatable ref={exceptionNumbersRef} placeholder="Enter phone number"  isMulti={true} />
+                    <Creatable 
+                        ref={exceptionNumbersRef}
+                        value={selectedExcludePhoneNumbers}
+                        onChange={(value) => setSelectedExcludePhoneNumbers(value)}
+                        placeholder="Enter phone number"  isMulti={true} />
                     <Form.Control
                         hidden={true}
                         isInvalid={errors?.includePhoneNumbers}
@@ -504,7 +576,8 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                 </Col>
             </Row>
             <Row>
-                <Button variant="secondary" onClick={handleSubmit}>Create</Button>
+                {!routine && <Button variant="secondary" onClick={handleSubmit}>Create</Button>}
+                {routine && <Button variant="secondary" onClick={handleSubmit}>Save</Button>}
             </Row>
             <Modal
                 show={showModal}
@@ -516,7 +589,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title id="contained-modal-title-vcenter">
-						Created successfully
+						{!routine ? 'Created successfully' : 'Updated Successfully'}
 					</Modal.Title>
 				</Modal.Header>
 			</Modal>

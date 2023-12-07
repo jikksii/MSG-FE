@@ -155,16 +155,18 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
     const [isFiltered,setIsFilterd] = useState(true)
     const handleSubmit = () => {
         let data = {}
-        data.routine_type_id =  selectedPeriodity.value;
+        if(selectedPeriodity){
+            data.routine_type_id =  selectedPeriodity.value;
+        }
         data.description  = routineNameRef.current.value
-        if(selectedPeriodity.value == 1){
+        if(selectedPeriodity && selectedPeriodity.value == 1){
             data.date = routineDate.current.value
         }else{
             data.start_date =  routineStartDate.current.value
             data.end_date =  routineEndDate.current.value
         }
         data.next_execution_time =  routineTime.current.value
-        if(selectedPeriodity.value == 3){
+        if(selectedPeriodity && selectedPeriodity.value == 3){
             data.send_on_monday = mondayRef.current.checked
             data.send_on_tuesday  = tuesdayRef.current.checked
             data.send_on_wednesday  = wednesdayRef.current.checked
@@ -173,7 +175,7 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
             data.send_on_saturday = saturdayRef.current.checked
             data.send_on_sunday  = sundayRef.current.checked
         }
-        if(selectedPeriodity.value == 4){
+        if(selectedPeriodity && selectedPeriodity.value == 4){
             data.day_of_month = dayOfMonthRef.current.value
         }
         let lists = contactBookSelectRef.current.state.selectValue;
@@ -209,6 +211,38 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
     const [selectedLists,setSelectedLists] = useState([]);
     const [selectedIncludePhoneNumbers, setSelectedIncludePhoneNumbers] = useState([]);
     const [selectedExcludePhoneNumbers, setSelectedExcludePhoneNumbers] = useState([]);
+
+
+
+    const getIncludePhoneNumbersErrors = () => {
+        let keys = Object.keys(errors).filter(key => key.match(/^includePhoneNumbers\.(\d+)$/))
+        let errs = keys.map(function(key){
+            let err = errors[key];
+            console.log(err);
+            return err.map((e) => {
+                return e;
+            })
+        })
+
+        return errs.flat();
+    }
+
+    const getExcludePhoneNumbersErrors = () => {
+        let keys = Object.keys(errors).filter(key => key.match(/^excludePhoneNumbers\.(\d+)$/))
+
+        let errs = keys.map(function(key){
+            let err = errors[key];
+            console.log(err);
+            return err.map((e) => {
+                return e;
+            })
+        })
+
+        return errs.flat();
+    }
+
+    const includePhoneNumbersErrors = getIncludePhoneNumbersErrors();
+    const excludePhoneNumbersErrors = getExcludePhoneNumbersErrors();
     return (
         <Form>
             {
@@ -216,6 +250,10 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                     <Row className="mb-3 ">
                         <Col xl={3} lg={6} md={6} xs={12}>
                             <Form.Label>Periodicity</Form.Label>
+                            <Form.Control
+                                isInvalid={errors?.routine_type_id}
+                                hidden={true}
+                            />
                             <Select options={routineTypes.map((e) => {
                                 return {
                                     value : e.id,
@@ -223,11 +261,11 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                                 }
                             }) }  value={selectedPeriodity} onChange={(value) => setSelectedPeriodity(value)} placeholder="Select Periodicity"/>
                             <Form.Control.Feedback type="invalid">
-                                {/* <ul>
-                                {errors?.phone_number?.map((error,index) => {
+                                <ul>
+                                {errors?.routine_type_id?.map((error,index) => {
                                     return <li key={index}>{error}</li>
                                 })}
-                                </ul> */}
+                                </ul>
                             </Form.Control.Feedback>
                         </Col>
                         {selectedPeriodity?.value === 1 && <Col xl={3} lg={6} md={6} xs={12}>
@@ -488,13 +526,18 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                         onChange={(value) => setSelectedIncludePhoneNumbers(value)} placeholder="Enter phone number"  isMulti={true} />
                     <Form.Control
                         hidden={true}
-                        isInvalid={errors?.includePhoneNumbers}
+                        isInvalid={errors?.includePhoneNumbers || includePhoneNumbersErrors.length > 0}
                     /> 
                     <Form.Control.Feedback type="invalid">
                         <ul>
                         {errors?.includePhoneNumbers?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
+                        </ul>
+                        <ul>
+                            {includePhoneNumbersErrors.map((error,index) => {
+                                return <li key={index}>{error}</li>
+                            })}
                         </ul>
                     </Form.Control.Feedback>
                 </Col>
@@ -511,13 +554,19 @@ const BatchMessageForm = ({isRoutine = false,routine = null}) => {
                         placeholder="Enter phone number"  isMulti={true} />
                     <Form.Control
                         hidden={true}
-                        isInvalid={errors?.excludePhoneNumbers}
+                        isInvalid={errors?.excludePhoneNumbers || excludePhoneNumbersErrors.length > 0}
                     /> 
                     <Form.Control.Feedback type="invalid">
                         <ul>
                         {errors?.excludePhoneNumbers?.map((error,index) => {
                             return <li key={index}>{error}</li>
                         })}
+                        </ul>
+
+                        <ul>
+                            {excludePhoneNumbersErrors.map((error,index) => {
+                                return <li key={index}>{error}</li>
+                            })}
                         </ul>
                     </Form.Control.Feedback>
                 </Col>

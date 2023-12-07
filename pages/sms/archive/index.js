@@ -50,7 +50,7 @@ const SmsQueue = () => {
     )
 
     const handlePageChange = (page) => {
-        fetchContacts({
+        fetchBatchMessages({
             method: 'GET',
             url: `/batch/messages?page=${page}`
         })

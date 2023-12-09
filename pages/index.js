@@ -16,6 +16,10 @@ import {
     People,
     Bullseye
 } from 'react-bootstrap-icons';
+import StatActiveRoutine from "widgets/stats/StatActiveRoutines";
+import StatTotalMessages from "widgets/stats/StatTotalMessages";
+import StatTodaysMessages from "widgets/stats/StatTodaysMessages";
+import StatContacts from "widgets/stats/StatContacts";
 
 export const ProjectsStats = [
     {
@@ -38,13 +42,6 @@ export const ProjectsStats = [
         value : 12,
         icon: <People size={18}/>,
         statInfo: '<span className="text-dark me-2">1</span> Completed' 
-    },
-    {
-        id:4,
-        title : "Productivity",
-        value : '76%',
-        icon: <Bullseye size={18}/>,
-        statInfo: '<span className="text-dark me-2">5%</span> Completed' 
     }
 ];
 
@@ -64,13 +61,18 @@ const Home = () => {
                             </div>
                         </div>
                     </Col>
-                    {ProjectsStats.map((item, index) => {
-                        return (
-                            <Col xl={3} lg={6} md={12} xs={12} className="mt-6" key={index}>
-                                <StatRightTopIcon info={item} />
-                            </Col>
-                        )
-                    })}
+                    <Col xl={3} lg={6} md={12} xs={12} className="mt-6">
+                        <StatTotalMessages />
+                    </Col>
+                    <Col xl={3} lg={6} md={12} xs={12} className="mt-6">
+                        <StatTodaysMessages />
+                    </Col>
+                    <Col xl={3} lg={6} md={12} xs={12} className="mt-6">
+                        <StatActiveRoutine />
+                    </Col>
+                    <Col xl={3} lg={6} md={12} xs={12} className="mt-6">
+                        <StatContacts />
+                    </Col>
                 </Row>
             </Container>
         </Fragment>

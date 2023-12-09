@@ -1,5 +1,5 @@
 import { Card } from 'react-bootstrap';
-import { Briefcase, Person } from 'react-bootstrap-icons';
+import { Book, Briefcase, Person } from 'react-bootstrap-icons';
 import styles from './Stat.module.css'
 import { useCallback, useEffect, useState } from 'react';
 import useHttp from 'hooks/useHttp';
@@ -33,7 +33,7 @@ const StatContacts = () => {
                             <h4 className="mb-0">Address Book Lists</h4>
                         </div>
                         <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
-                            <Person size={18} />
+                            <Book size={18} />
                         </div>
                     </div>
                     {isLoading &&

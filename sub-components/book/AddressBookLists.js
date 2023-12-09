@@ -8,6 +8,7 @@ import { MoreVertical, PlusCircle } from 'react-feather';
 // import required data files
 import ProjectsContributionsData from 'data/profile/ProjectsContributionsData';
 import useHttp from "hooks/useHttp";
+import { Book } from "react-bootstrap-icons";
 
 const AddressBookLists = ({onListSelect,onListAddClicked}) => {
 
@@ -218,9 +219,7 @@ const AddressBookLists = ({onListSelect,onListAddClicked}) => {
                             className={`d-md-flex p-2 justify-content-between align-items-center mb-4 hover-pointer hover-bg-light ${item.id === selectedAddressBookList?.id ? "bg-gray-200" : ""}`} key={index}>
                                 <div onClick={() => listSelectHandler(item)}  className="d-flex flex-fill align-items-center">
                                     <div>
-                                        <div className={`icon-shape icon-md border p-4 rounded-1 ${item.brandLogoBg}`}>
-                                            <Image src={item.brandLogo} alt="" />
-                                        </div>
+                                        <Book size={20} />
                                     </div>
                                     {/* text */}
                                     <div className="ms-3 flex-grow-1">

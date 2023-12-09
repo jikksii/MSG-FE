@@ -27,27 +27,50 @@ const StatContacts = () => {
     return (
         <Card className={`${styles.stats}`}>
             <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h4 className="mb-0">Contacts</h4>
-                    </div>
-                    <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
-                        <Person size={18}/>
-                    </div>
-                </div>
-                {isLoading &&
-                    <div className="d-flex justify-content-center">
-                        <div className="spinner-border" role="status">
-                            <span className="sr-only">Loading...</span>
+                <div>
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h4 className="mb-0">Address Book Lists</h4>
+                        </div>
+                        <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
+                            <Person size={18} />
                         </div>
                     </div>
-                }
-                {!isLoading && data &&
-                    <div>
-                    <h1 className="fw-bold  text-center">{data.count}</h1>
+                    {isLoading &&
+                        <div className="d-flex justify-content-center">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    }
+                    {!isLoading && data &&
+                        <div>
+                            <h1 className="fw-bold  text-center">{data.countAddressBookLists}</h1>
+                        </div>
+                    }
                 </div>
-                }
-                
+                <div>
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h4 className="mb-0">Contacts</h4>
+                        </div>
+                        <div className="icon-shape icon-md bg-light-primary text-primary rounded-2">
+                            <Person size={18} />
+                        </div>
+                    </div>
+                    {isLoading &&
+                        <div className="d-flex justify-content-center">
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    }
+                    {!isLoading && data &&
+                        <div>
+                            <h1 className="fw-bold  text-center">{data.countContacts}</h1>
+                        </div>
+                    }
+                </div>
             </Card.Body>
         </Card>
     )

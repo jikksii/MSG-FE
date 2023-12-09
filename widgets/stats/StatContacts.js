@@ -1,8 +1,29 @@
 import { Card } from 'react-bootstrap';
 import { Briefcase, Person } from 'react-bootstrap-icons';
 import styles from './Stat.module.css'
+import { useCallback, useEffect, useState } from 'react';
+import useHttp from 'hooks/useHttp';
 
 const StatContacts = () => {
+
+    const [data, setData] = useState(null);
+    const handleError = useCallback(() => {
+
+    }, []);
+
+    const handleSuccessFetch = useCallback(
+        (data) => {
+            setData(data.data);
+        },
+        []);
+    const { isLoading, sendRequest: fetch } = useHttp(handleSuccessFetch, handleError);
+
+    useEffect(() => {
+        fetch({
+            method: 'GET',
+            url: "/statistic/messages/contacts"
+        })
+    }, [])
     return (
         <Card className={`${styles.stats}`}>
             <Card.Body>
@@ -14,9 +35,19 @@ const StatContacts = () => {
                         <Person size={18}/>
                     </div>
                 </div>
-                <div>
-                    <h1 className="fw-bold  text-center">129</h1>
+                {isLoading &&
+                    <div className="d-flex justify-content-center">
+                        <div className="spinner-border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                }
+                {!isLoading && data &&
+                    <div>
+                    <h1 className="fw-bold  text-center">{data.count}</h1>
                 </div>
+                }
+                
             </Card.Body>
         </Card>
     )
